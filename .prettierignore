@@ -1,4 +1,5 @@
-QL_tour/apps/home/templates/home.html
-QL_tour/apps/tours/templates/index.html
-QL_tour/apps/bookings/templates/booking.html
-QL_tour/apps/tours/templates/detail.html
+apps/home/templates/home.html
+apps/tours/templates/index.html
+apps/bookings/templates/booking.html
+apps/tours/templates/detail.html
+templates/share_layout.html

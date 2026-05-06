@@ -99,151 +99,115 @@
 
   @media (min-width: 1200px) {
     .image-wrap {
-      min-height: 520px;
+      min-height: 420px;
     }
   }
 
-  /* Pull the detail card slightly to the left on large screens to enlarge image */
+  /* Detail card styling */
   .detail-card {
     position: relative;
     overflow: visible;
-  }
-  @media (min-width: 992px) {
-    .detail-card {
-      margin-left: -60px;
-      padding-left: 1.5rem;
-    }
-    .detail-card .image-wrap {
-      min-height: 560px;
-    }
   }
 </style>
 
 
 <div class="container py-5">
-  <div class="row g-4 mb-5 align-items-stretch">
-    <div class="col-lg-7">
-      <div class="card detail-card border-0 shadow-sm rounded-4 h-100 p-4">
-        <div class="row g-4 h-100">
-          <div class="col-md-6 d-flex">
-            <div class="image-wrap position-relative flex-fill">
-              <img
-                src="{% if images and images|length > 0 %}{{ images.0.image.url }}{% elif tour.thumbnail %}{{ tour.thumbnail.url }}{% else %}{% static 'images/placeholder-tour.svg' %}{% endif %}"
-                alt="{{ tour.title }}"
-                class="detail-img shadow-sm"
-                style="cursor: pointer; width: 100%; height: 100%"
-                data-bs-toggle="modal"
-                data-bs-target="#galleryModal"
-              />
-                {% if images|length > 1 %}
-                <span
-                class="position-absolute top-0 start-0 badge bg-dark bg-opacity-75 text-white m-3"
-                >+{{ images|length }}</span
-                >
-                {% endif %}
-              </div>
-              </div>
-          <div class="col-md-6 d-flex flex-column">
-            <h2
-              class="fw-bold mb-2"
-              style="text-transform: capitalize; color: #1e293b"
-            >
-              {{ tour.title }}
-            </h2>
-
-            <ul class="info-list mt-auto mb-0">
-              <li>
-                <div class="info-icon">
-                  <i class="fas fa-money-bill-wave"></i>
-                </div>
-                <div>
-                  <small class="text-muted d-block" style="font-size: 0.8rem"
-                    >Giá</small
-                  ><strong class="text-danger fs-5"
-                    >{{ tour.price|currency_vnd }}</strong
-                  >
-                </div>
-              </li>
-              <li>
-                <div class="info-icon"><i class="fas fa-th-large"></i></div>
-                <div>
-                  <small class="text-muted d-block" style="font-size: 0.8rem"
-                    >Danh mục</small
-                  ><span class="fw-medium">{{ tour.category }}</span>
-                </div>
-              </li>
-              <li>
-                <div class="info-icon">
-                  <i class="fas fa-map-marker-alt"></i>
-                </div>
-                <div>
-                  <small class="text-muted d-block" style="font-size: 0.8rem"
-                    >Quốc gia</small
-                  ><span class="fw-medium">{{ tour.country }}</span>
-                </div>
-              </li>
-              <li>
-                <div class="info-icon"><i class="far fa-clock"></i></div>
-                <div>
-                  <small class="text-muted d-block" style="font-size: 0.8rem"
-                    >Số ngày</small
-                  ><span class="fw-medium"
-                    >{{ tour.duration_days|default:"Chưa có thông tin" }}</span
-                  >
-                </div>
-              </li>
-              <li>
-                <div class="info-icon"><i class="fas fa-users"></i></div>
-                <div>
-                  <small class="text-muted d-block" style="font-size: 0.8rem"
-                    >Số người</small
-                  ><span class="fw-medium">{{ tour.max_people }} người</span>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-lg-5">
-      <div
-        class="card border-0 shadow-sm rounded-4 h-100 p-4 d-flex flex-column"
-      >
-        <h4 class="fw-bold mb-3">
-          <i class="fas fa-route text-primary me-2"></i>Các điểm đến
-        </h4>
-        <div class="flex-grow-1 position-relative">
-          {% if stops %}
-            <div class="list-group list-group-flush">
-              {% for stop in stops %}
-                <div class="list-group-item d-flex gap-3 align-items-start">
-                  <img
-                    src="{% if stop.image %}{{ stop.image.url }}{% else %}{% static 'images/placeholder-tour.svg' %}{% endif %}"
-                    alt="{{ stop.name|default:'Điểm đến' }}"
-                    class="rounded-3"
-                    style="width:84px;height:84px;object-fit:cover;"
-                  />
-                  <div class="flex-grow-1">
-                    <h5 class="mb-1">{{ stop.name|default:stop.title|default:'Điểm dừng' }}</h5>
-                    <p class="mb-1 text-muted small">{{ stop.description|default:''|truncatechars:140 }}</p>
-                    {% if stop.order %}
-                      <small class="text-muted">Thứ tự: {{ stop.order }}</small>
-                    {% endif %}
-                  </div>
-                </div>
-              {% endfor %}
-            </div>
-          {% else %}
-            <div class="p-4 text-center text-muted">Chưa có điểm đến được cấu hình cho tour này.</div>
+  <div class="row g-4 mb-5">
+    <!-- Left Column: Image -->
+    <div class="col-lg-6">
+      <div class="card detail-card border-0 shadow-sm rounded-4 p-4 h-100">
+        <div class="image-wrap position-relative">
+          <img
+            src="{% if images and images|length > 0 %}{{ images.0.image.url }}{% elif tour.thumbnail %}{{ tour.thumbnail.url }}{% else %}{% static 'images/placeholder-tour.svg' %}{% endif %}"
+            alt="{{ tour.title }}"
+            class="detail-img shadow-sm"
+            style="cursor: pointer; width: 100%; height: 100%"
+            data-bs-toggle="modal"
+            data-bs-target="#galleryModal"
+          />
+          {% if images|length > 1 %}
+          <span
+            class="position-absolute top-0 start-0 badge bg-dark bg-opacity-75 text-white m-3"
+            >+{{ images|length }}</span
+          >
           {% endif %}
         </div>
       </div>
     </div>
+
+    <!-- Right Column: Tour Info -->
+    <div class="col-lg-6">
+      <!-- Tour Information Card -->
+      <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+        <h2
+          class="fw-bold mb-4"
+          style="text-transform: capitalize; color: #1e293b"
+        >
+          {{ tour.title }}
+        </h2>
+
+        <ul class="info-list mb-0">
+          <li>
+            <div class="info-icon">
+              <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <div>
+              <small class="text-muted d-block" style="font-size: 0.8rem"
+                >Giá</small
+              ><strong class="text-danger fs-5"
+                >{{ tour.price|currency_vnd }}</strong
+              >
+            </div>
+          </li>
+          <li>
+            <div class="info-icon"><i class="fas fa-th-large"></i></div>
+            <div>
+              <small class="text-muted d-block" style="font-size: 0.8rem"
+                >Danh mục</small
+              ><span class="fw-medium">{{ tour.category }}</span>
+            </div>
+          </li>
+          <li>
+            <div class="info-icon">
+              <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div>
+              <small class="text-muted d-block" style="font-size: 0.8rem"
+                >Quốc gia</small
+              ><span class="fw-medium">{{ tour.country }}</span>
+            </div>
+          </li>
+          <li>
+            <div class="info-icon"><i class="far fa-clock"></i></div>
+            <div>
+              <small class="text-muted d-block" style="font-size: 0.8rem"
+                >Số ngày</small
+              ><span class="fw-medium"
+                >{{ tour.duration_days|default:"Chưa có thông tin" }}</span
+              >
+            </div>
+          </li>
+          <li>
+            <div class="info-icon"><i class="fas fa-users"></i></div>
+            <div>
+              <small class="text-muted d-block" style="font-size: 0.8rem"
+                >Số người</small
+              ><span class="fw-medium">{{ tour.max_people }} người</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 
-  <div class="text-muted fst-italic mb-4 lh-base">
-    {{ tour.description|safe }}
+  <!-- Description Section -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mb-5">
+    <h3 class="fw-bold mb-4 border-bottom pb-3">
+      <i class="fas fa-align-left text-primary me-2"></i>Mô tả chi tiết
+    </h3>
+    <div class="text-muted lh-base">
+      {{ tour.description|safe }}
+    </div>
   </div>
 
   <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5">
