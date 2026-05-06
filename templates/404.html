@@ -1,0 +1,10 @@
+{% extends 'share_layout.html' %}
+{% block content %}
+<div class="container text-center mt-5">
+  <h1 class="display-3 text-danger">404</h1>
+  <h2 class="mb-4">Không tìm thấy trang</h2>
+  <p class="mb-4">Trang bạn yêu cầu không tồn tại hoặc đã bị xóa.</p>
+  <button class="btn btn-primary" onclick="window.history.back()">Quay lại trang trước</button>
+  <a href="{% url 'home' %}" class="btn btn-outline-secondary ms-2" aria-label="Về trang chủ">Về trang chủ</a>
+</div>
+{% endblock %}

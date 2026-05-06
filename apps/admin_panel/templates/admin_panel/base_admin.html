@@ -1,0 +1,268 @@
+{% extends 'share_layout.html' %}
+{% load static %}
+
+{% block title %}Admin Panel - Tourify{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Nền trang */
+    body {
+        background-color: #f0f4f8; 
+    }
+
+    .admin-shell {
+        padding-bottom: 3rem;
+        padding-top: 1.5rem;
+    }
+
+    /* --- TRANG TRÍ HEADER PHONG CÁCH DU LỊCH --- */
+    .admin-header {
+        background-color: #ffffff;
+        /* Thêm pattern bản đồ thế giới mờ mờ làm nền */
+        background-image: url('https://www.transparenttextures.com/patterns/world-map.png');
+        background-blend-mode: multiply;
+        padding: 1.8rem 2rem;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.04);
+        margin-bottom: 1.5rem;
+        border: 1px solid #eef2f5;
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Dải màu nhấn ở mép trái header */
+    .admin-header::before {
+        content: "";
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 6px;
+        background: linear-gradient(to bottom, #00c6ff, #0072ff);
+    }
+
+    .admin-header-icon {
+        width: 55px;
+        height: 55px;
+        background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+        color: white;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        margin-right: 1.2rem;
+        box-shadow: 0 5px 15px rgba(0, 114, 255, 0.3);
+    }
+
+    .admin-header h2 {
+        font-weight: 800;
+        color: #2c3e50;
+        letter-spacing: -0.5px;
+    }
+
+    /* --- TRANG TRÍ SIDEBAR --- */
+    .admin-sidebar {
+        position: sticky;
+        top: 20px;
+        height: calc(100vh - 40px);
+        overflow-y: auto;
+    }
+
+    .admin-sidebar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .admin-menu {
+        border: none;
+        border-radius: 15px;
+        background: #ffffff;
+        padding: 1rem 0;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.03) !important;
+    }
+
+    .admin-menu .list-group-item {
+        border: none;
+        padding: 0.85rem 1.5rem;
+        color: #546e7a;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        border-left: 4px solid transparent;
+        background: transparent;
+    }
+
+    .admin-menu .list-group-item:hover {
+        background-color: #f8fafc;
+        color: #0072ff;
+    }
+
+    .admin-menu .list-group-item.active {
+        background: linear-gradient(90deg, rgba(0, 198, 255, 0.1) 0%, rgba(255,255,255,0) 100%);
+        color: #0072ff;
+        font-weight: 700;
+        border-left: 4px solid #0072ff;
+    }
+
+    .admin-menu .list-group-item i {
+        width: 28px; 
+        text-align: center;
+        margin-right: 12px;
+        font-size: 1.1rem;
+        color: #94a3b8;
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    .admin-menu .list-group-item:hover i {
+        transform: scale(1.15);
+    }
+
+    .admin-menu .list-group-item:hover i,
+    .admin-menu .list-group-item.active i {
+        color: #0072ff;
+    }
+
+    /* --- KHU VỰC MAIN --- */
+    .admin-main .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.04);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background: #ffffff;
+        border: 1px solid #eef2f5;
+        height: 100%;
+    }
+
+    .admin-main .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 114, 255, 0.08);
+    }
+
+    .admin-main .card-body {
+        padding: 1.5rem;
+    }
+
+    .admin-main .btn-primary {
+        background: linear-gradient(135deg, #0d6efd, #0098f0);
+        border: none;
+        border-radius: 10px;
+        padding: 0.6rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .admin-main .btn-primary:hover {
+        box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+        transform: translateY(-2px);
+    }
+
+    /* Responsive: thu nhỏ sidebar và menu trên tablet/mobi */
+    @media (max-width: 991.98px) {
+        .admin-sidebar {
+            position: relative;
+            top: auto;
+            height: auto;
+            max-height: none;
+            overflow: visible;
+            margin-bottom: 1rem;
+        }
+        .admin-menu {
+            padding: 0.5rem;
+            border-radius: 12px;
+        }
+        .admin-menu .list-group-item {
+            padding: 0.6rem 0.9rem;
+            font-size: 0.95rem;
+        }
+        .admin-menu .list-group-item i {
+            width: 22px;
+            margin-right: 8px;
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .admin-header { padding: 1rem; border-radius: 12px; }
+        .admin-menu .list-group-item { padding: 0.5rem 0.75rem; font-size: 0.93rem; }
+        .admin-menu .list-group-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .admin-menu .list-group-item i { margin-right: 8px; }
+    }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<div class="container-fluid admin-shell">
+    
+    <div class="admin-header mb-4">
+        <div class="admin-header-icon">
+            <i class="fas fa-compass"></i>
+        </div>
+        <div class="position-relative z-1">
+            <h2 class="mb-0">Trạm Kiểm Soát Tourify</h2>
+            <div class="text-muted small fw-medium mt-1">Hệ thống điều hướng & Quản lý dữ liệu trung tâm</div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <aside class="col-md-3 col-lg-2 admin-sidebar">
+            <div class="list-group shadow-sm admin-menu">
+                
+                <a href="/" class="list-group-item list-group-item-action text-secondary border-bottom mb-2 pb-3">
+                    <i class="fas fa-plane text-muted"></i> Quay lại Web
+                </a>
+
+                {% for item in menu %}
+                    <a href="{% url 'admin_panel:model_list' model_key=item.key %}" 
+                       class="list-group-item list-group-item-action {% if current_key == item.key %}active{% endif %}">
+                        
+                        {% if 'Danh mục' in item.label %}
+                            <i class="fas fa-tags"></i>
+                        {% elif 'Châu lục' in item.label or 'Quốc gia' in item.label %}
+                            <i class="fas fa-globe-americas"></i>
+                        {% elif 'Lịch trình' in item.label %}
+                            <i class="far fa-calendar-alt"></i>
+                        {% elif 'Tuyến' in item.label %}
+                            <i class="fas fa-route"></i>
+                        {% elif 'Điểm' in item.label %}
+                            <i class="fas fa-map-marker-alt"></i>
+                        {% elif 'Tour' in item.label %}
+                            <i class="fas fa-suitcase-rolling"></i>
+                        {% elif 'Người dùng' in item.label %}
+                            <i class="fas fa-users"></i>
+                        {% elif 'Đặt chỗ' in item.label %}
+                            <i class="fas fa-ticket-alt"></i>
+                        {% elif 'Thanh toán' in item.label %}
+                            <i class="fas fa-credit-card"></i>
+                        {% elif 'Tin nhắn' in item.label %}
+                            <i class="fas fa-envelope-open-text"></i>
+                        {% else %}
+                            <i class="fas fa-map"></i>
+                        {% endif %}
+                        
+                        {{ item.label }}
+                    </a>
+                {% endfor %}
+            </div>
+        </aside>
+
+        <main class="col-md-9 col-lg-10 admin-main">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show border-0" role="alert">
+                        {% if message.tags == 'success' %}<i class="fas fa-check-circle me-2"></i>{% endif %}
+                        {% if message.tags == 'error' or message.tags == 'danger' %}<i class="fas fa-exclamation-triangle me-2"></i>{% endif %}
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% block admin_page %}{% endblock admin_page %}
+            
+        </main>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}{% endblock extra_js %}

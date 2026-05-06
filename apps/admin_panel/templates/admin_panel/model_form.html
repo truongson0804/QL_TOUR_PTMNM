@@ -1,0 +1,272 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% load static %}
+
+{% block admin_page %}
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+      <h3 class="mb-1">
+        {% if mode == 'create' %}Tạo mới{% else %}Cập nhật{% endif %} {{ config.label }}
+      </h3>
+      <div class="text-muted">Biểu mẫu quản trị riêng (UI custom).</div>
+    </div>
+    <a class="btn btn-outline-secondary" href="{% url 'admin_panel:model_list' model_key=config.key %}">
+      Quay lại
+    </a>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" class="admin-form-card p-4">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">
+        {% for error in form.non_field_errors %}
+          <div>{{ error }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% for field in form.visible_fields %}
+      {% if field.name in checkbox_fields %}
+        <div class="form-check mb-3">
+          {{ field }}
+          <label class="form-check-label" for="{{ field.id_for_label }}">
+            {{ field.label }}
+          </label>
+        </div>
+        {% if field.errors %}
+          {% for error in field.errors %}
+            <div class="text-danger small mb-2">{{ error }}</div>
+          {% endfor %}
+        {% endif %}
+      {% else %}
+        {# Special-case tour_stops: render lat/lon as hidden and render a map UI #}
+        {% if config.key == 'tour_stops' and field.name == 'lat_input' %}
+          <div class="mb-3">
+            <label class="form-label">Vị trí trên bản đồ</label>
+            <div id="admin-map" style="height: 400px; width: 100%; border: 1px solid #ddd; border-radius: 6px; margin-bottom: .5rem;"></div>
+            <div class="form-text">Click lên bản đồ hoặc dùng ô tìm kiếm để chọn vị trí. Kéo marker để điều chỉnh.</div>
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-md-6">
+              <label class="form-label" for="{{ form.lat_input.id_for_label }}">Latitude</label>
+              {{ form.lat_input }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="{{ form.lon_input.id_for_label }}">Longitude</label>
+              {{ form.lon_input }}
+            </div>
+          </div>
+
+          {# Include geocoder CSS + plugin + admin map JS #}
+          <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+          <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+          <script src="{% static 'js/admin_tourstop_map.js' %}"></script>
+
+        {% elif config.key == 'tour_stops' and field.name == 'lon_input' %}
+          {% comment %}lon_input already rendered alongside lat_input above{% endcomment %}
+
+        {% else %}
+          <div class="mb-3">
+            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+
+            {% if field.errors %}
+              {% for error in field.errors %}
+                <div class="text-danger small mb-1">{{ error }}</div>
+              {% endfor %}
+            {% endif %}
+
+            {# Nếu là trường số, render input text thay vì mặc định #}
+            {% if field.field.widget.input_type == 'number' %}
+              <input type="text" name="{{ field.html_name }}" id="{{ field.id_for_label }}" value="{{ field.value|default_if_none:'' }}" class="form-control" autocomplete="off">
+            {% else %}
+              {{ field }}
+            {% endif %}
+
+            {# For Tour create/edit: allow uploading multiple additional images #}
+            {% if config.key == 'tours' and field.name == 'thumbnail' %}
+              <div class="mt-2">
+                <label class="form-label">Ảnh bổ sung</label>
+                <input type="file" name="extra_images" accept="image/*" multiple class="form-control">
+                <div class="form-text">Bạn có thể chọn nhiều ảnh, chúng sẽ được lưu làm ảnh tour.</div>
+              </div>
+            {% endif %}
+
+            {% if field.help_text %}
+              <div class="form-text">{{ field.help_text }}</div>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
+    <div class="d-flex gap-2 pt-2">
+      <button type="submit" class="btn btn-primary">
+        {% if mode == 'create' %}Lưu{% else %}Cập nhật{% endif %}
+      </button>
+      {% if mode != 'create' and config.key == 'bookings' and obj %}
+        {% if obj.payment_verified %}
+          <button type="submit" name="verify_payment" value="0" class="btn btn-warning" onclick="return confirm('Hủy duyệt thanh toán cho đặt chỗ này?');">Hủy duyệt thanh toán</button>
+        {% else %}
+          <button type="submit" name="verify_payment" value="1" class="btn btn-success" onclick="return confirm('Xác nhận khách đã thanh toán?');">Duyệt thanh toán</button>
+        {% endif %}
+      {% endif %}
+      {% if mode != 'create' %}
+        <a
+          class="btn btn-outline-danger"
+          href="{% url 'admin_panel:model_delete' model_key=config.key pk=obj.id %}"
+        >
+          Xoa
+        </a>
+      {% endif %}
+    </div>
+      {% if config.key == 'contacts' and mode != 'create' %}
+      <div class="card mb-3 p-3">
+        <h5 class="mb-2">Trả lời người dùng</h5>
+        <div class="mb-2">
+          <label class="form-label">Email người gửi</label>
+          <div class="form-control-plaintext">{{ obj.email }}</div>
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Nội dung phản hồi</label>
+          <textarea name="reply_message" class="form-control" rows="5"></textarea>
+        </div>
+        
+        <div>
+          <button type="submit" name="reply" value="1" class="btn btn-success">Gửi phản hồi</button>
+        </div>
+      </div>
+      {% endif %}
+  </form>
+{% endblock admin_page %}
+
+{% block extra_js %}
+  {# Load CKEditor5 from CDN and initialize on any textarea intended for rich description #}
+  <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+  <script>
+    (function () {
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+
+      const editorInstances = [];
+
+      function initEditors() {
+        try {
+          const selectors = [
+            'textarea[name="description"]',
+            'textarea[name$="_description"]',
+            'textarea[id$="description"]',
+            'textarea.ckeditor'
+          ];
+          const els = document.querySelectorAll(selectors.join(', '));
+          els.forEach((el) => {
+            // Avoid double-init
+            if (el.dataset.ckeditorInitialized) return;
+
+            ClassicEditor.create(el, {
+              simpleUpload: {
+                uploadUrl: '{% url "admin_panel:ckeditor_upload" %}',
+                headers: {
+                  'X-CSRFToken': getCookie('csrftoken')
+                }
+              }
+            }).then((editor) => {
+              el.dataset.ckeditorInitialized = '1';
+              // Keep reference to editor so we can copy data on submit
+              editorInstances.push({ el: el, editor: editor });
+
+              // Update textarea value on editor change so any client-side checks see it
+              try {
+                editor.model.document.on('change:data', () => {
+                  try {
+                    el.value = editor.getData();
+                  } catch (e) {
+                    // ignore
+                  }
+                });
+              } catch (e) {
+                // ignore if model isn't available
+              }
+            }).catch((err) => {
+              // Log but don't break the page
+              console.error('CKEditor init error:', err);
+            });
+          });
+
+          // Attach submit handler to forms that contain editors
+          // Use a small timeout to ensure editors array filled
+          setTimeout(() => {
+            const forms = new Set();
+            editorInstances.forEach(({ el }) => {
+              const f = el.closest('form') || document.querySelector('form.admin-form-card');
+              if (f) forms.add(f);
+            });
+
+            forms.forEach((form) => {
+              if (form.dataset.ckeditorSubmitHandler) return;
+              form.addEventListener('submit', () => {
+                editorInstances.forEach(({ el, editor }) => {
+                  // only update textareas that belong to this form
+                  if (!form.contains(el)) return;
+                  try {
+                    el.value = editor.getData();
+                  } catch (e) {
+                    // ignore
+                  }
+                });
+              });
+              form.dataset.ckeditorSubmitHandler = '1';
+            });
+          }, 50);
+
+        } catch (e) {
+          console.error('Failed to init CKEditor:', e);
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initEditors);
+      } else {
+        initEditors();
+      }
+    })();
+  </script>
+  <script>
+    // Ngăn submit nếu có số âm ở bất kỳ trường số nào
+    document.addEventListener('DOMContentLoaded', function() {
+      var form = document.querySelector('form.admin-form-card');
+      if (!form) return;
+      form.addEventListener('submit', function(e) {
+        // Lấy tất cả input type=number hoặc input có class form-control
+        var invalid = false;
+        var fields = form.querySelectorAll('input[type="number"], input.form-control');
+        fields.forEach(function(input) {
+          // Loại trừ các input không phải số
+          var val = input.value;
+          if (val === '' || isNaN(val)) return;
+          if (parseFloat(val) < 0) {
+            invalid = true;
+          }
+        });
+        if (invalid) {
+          alert('Không được nhập số âm!');
+          e.preventDefault();
+          return false;
+        }
+      });
+    });
+  </script>
+{% endblock extra_js %}
+

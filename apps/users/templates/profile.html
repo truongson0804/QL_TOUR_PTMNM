@@ -1,0 +1,294 @@
+{% extends 'share_layout.html' %} 
+{% load static %} 
+
+{% block title %}Hồ sơ cá nhân - Tourify{% endblock %}
+
+{% block content %}
+<style>
+    /* Nền trang web nhẹ nhàng */
+    .profile-page {
+        background-color: #f4f7f6;
+        min-height: 100vh;
+        padding-top: 3rem;
+        padding-bottom: 5rem;
+    }
+
+    /* Thiết kế thẻ Card dùng chung */
+    .modern-card {
+        background: #ffffff;
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    /* Header của profile với ảnh bìa phong cảnh */
+    .profile-cover {
+        height: 250px;
+        background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+        position: relative;
+    }
+
+    /* Lớp phủ cho ảnh bìa */
+    .profile-cover-overlay {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.4));
+    }
+
+    /* Căn chỉnh Avatar */
+    .profile-avatar {
+        width: 140px;
+        height: 140px;
+        object-fit: cover;
+        border: 5px solid #ffffff;
+        border-radius: 50%;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        background-color: #fff;
+    }
+
+    .profile-avatar-fallback {
+        width: 140px;
+        height: 140px;
+        border: 5px solid #ffffff;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 3rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    }
+
+    /* Icon box cho thông tin liên hệ */
+    .icon-box-sm {
+        width: 45px;
+        height: 45px;
+        background-color: #f8f9fa;
+        color: #6c757d;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .icon-box-sm:hover {
+        background-color: #e9ecef;
+        color: #0d6efd;
+    }
+
+    /* Card thống kê (Stats) */
+    .stat-card {
+        background: #fcfcfc;
+        border: 1px solid #eef2f5;
+        border-radius: 1rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+    }
+
+    @media (min-width: 768px) {
+        .border-end-md {
+            border-right: 1px solid #eef2f5;
+        }
+    }
+
+    /* Tùy chỉnh bảng Booking */
+    .booking-table th {
+        color: #6c757d;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+    
+    .booking-table td {
+        vertical-align: middle;
+        padding: 1rem 0.5rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .tour-title-link {
+        color: #2c3e50;
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .tour-title-link:hover {
+        color: #0d6efd;
+    }
+</style>
+
+<div class="profile-page">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                
+                <div class="modern-card">
+                    <div class="profile-cover">
+                        <div class="profile-cover-overlay"></div>
+                    </div>
+                    
+                    <div class="card-body px-4 px-md-5 pb-5">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center align-items-md-end z-3 position-relative" style="margin-top: -70px; margin-bottom: 2rem;">
+                            
+                            <div class="d-flex align-items-end mb-3 mb-md-0">
+                                {% if profile_user.avatar and profile_user.avatar.url %}
+                                    <img src="{{ profile_user.avatar.url }}" alt="avatar" class="profile-avatar">
+                                {% else %}
+                                    <div class="profile-avatar-fallback">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="d-flex gap-2">
+                                {% if user.is_authenticated and user.username == profile_user.username %}
+                                    <a class="btn btn-primary rounded-pill px-4 shadow-sm fw-medium" href="{% url 'edit_profile' user.username %}">
+                                        <i class="fas fa-pen fa-sm me-1"></i> Sửa hồ sơ
+                                    </a>
+                                    <a class="btn btn-outline-secondary rounded-pill px-4 fw-medium" href="{% url 'change_password' user.username %}">
+                                        <i class="fas fa-lock fa-sm me-1"></i> Đổi mật khẩu
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row g-5">
+                            <div class="col-md-7 border-end-md pe-md-5">
+                                <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
+                                    <h2 class="fw-bold text-dark mb-0">{{ profile_user.get_full_name|default:profile_user.username }}</h2>
+                                    <span class="badge bg-warning text-dark bg-opacity-25 border border-warning rounded-pill px-3 py-1 fw-bold">
+                                        <i class="fas fa-crown text-warning me-1"></i> Traveler
+                                    </span>
+                                </div>
+                                <p class="text-primary fw-medium mb-4 fs-5">@{{ profile_user.username }}</p>
+                                
+                                <div class="d-flex flex-column gap-3 text-muted">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-box-sm me-3"><i class="fas fa-envelope fs-5"></i></div>
+                                        <span class="fw-medium">{{ profile_user.email|default:"Chưa cập nhật email" }}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-box-sm me-3"><i class="fas fa-id-card fs-5"></i></div>
+                                        <span class="fw-medium">
+                                            {% if profile_user.first_name or profile_user.last_name %}
+                                                {{ profile_user.first_name }} {{ profile_user.last_name }}
+                                            {% else %}
+                                                <i>Chưa cập nhật họ tên</i>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5 ps-md-4">
+                                <h6 class="text-muted text-uppercase fw-bold mb-3 letter-spacing-1">Thống kê hành trình</h6>
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <div class="stat-card p-3 text-center h-100">
+                                            <i class="fas fa-suitcase-rolling text-primary fs-2 mb-2 d-block"></i>
+                                            <h3 class="fw-bold text-dark mb-0">{{ bookings|length|default:"0" }}</h3>
+                                            <small class="text-muted fw-medium">Tổng chuyến</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="stat-card p-3 text-center h-100">
+                                            <i class="fas fa-check-circle text-success fs-2 mb-2 d-block"></i>
+                                            <h3 class="fw-bold text-dark mb-0">{{ confirmed_count|default:"0" }}</h3>
+                                            <small class="text-muted fw-medium">Đã xác nhận</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <div class="modern-card p-4 p-md-5">
+                    <h4 class="fw-bold mb-4" style="color: #2c3e50;">
+                        <i class="fas fa-suitcase-rolling text-primary me-2"></i> Hành trình của bạn
+                    </h4>
+                    
+                    {% if bookings %}
+                        <div class="table-responsive">
+                            <table class="table booking-table table-hover border-white mb-0">
+                                <thead>
+                                    <tr>
+                                        <th width="5%">#</th>
+                                        <th width="35%">Tên Tour</th>
+                                        <th width="15%">Khởi hành</th>
+                                        <th width="10%">Số khách</th>
+                                        <th width="15%">Tổng tiền (VND)</th>
+                                        <th width="10%">Trạng thái</th>
+                                        <th width="10%" class="text-center">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for b in bookings %}
+                                        <tr>
+                                            <td class="text-muted fw-medium">{{ forloop.counter }}</td>
+                                            <td>
+                                                <a href="{% url 'tour_detail' b.tour_schedule.tour.id %}" class="tour-title-link">
+                                                    {{ b.tour_schedule.tour.title }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <span class="d-block text-dark fw-medium">{{ b.tour_schedule.start_day|date:"d/m/Y" }}</span>
+                                                <small class="text-muted">{{ b.tour_schedule.start_day|date:"H:i" }}</small>
+                                            </td>
+                                            <td><i class="fas fa-user-friends text-muted me-1"></i> {{ b.total_people }}</td>
+                                            <td class="fw-bold text-dark">{{ b.total_price }}</td>
+                                            <td>
+                                                {% if b.status == 'CANCELLED' %}
+                                                    <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-2 border border-danger border-opacity-25">Đã hủy</span>
+                                                {% else %}
+                                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 border border-success border-opacity-25">{{ b.get_status_display }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-center">
+                                                {% if user.is_authenticated and user.username == profile_user.username %}
+                                                    {% if b.status == 'CANCELLED' %}
+                                                        <span class="text-muted">-</span>
+                                                    {% else %}
+                                                        {% if b.can_cancel %}
+                                                            <form method="post" action="{% url 'cancel_booking' profile_user.username b.id %}" style="display:inline">
+                                                                {% csrf_token %}
+                                                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3" onclick="return confirm('Bạn có chắc chắn muốn hủy chuyến đi này không?');">Hủy tour</button>
+                                                            </form>
+                                                        {% else %}
+                                                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 disabled" disabled title="Không thể hủy chuyến đi đã bắt đầu hoặc đã kết thúc">Hủy tour</button>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="text-muted">-</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <img src="{% static 'images/empty-state-travel.svg' %}" alt="No bookings" style="width: 150px; opacity: 0.5;" onerror="this.style.display='none'">
+                            <h5 class="text-muted mt-4">Chưa có chuyến đi nào</h5>
+                            <p class="text-muted mb-4">Có vẻ như bạn chưa đặt tour nào. Hãy bắt đầu khám phá ngay!</p>
+                            <a href="/" class="btn btn-primary rounded-pill px-4">Khám phá tour ngay</a>
+                        </div>
+                    {% endif %}
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,325 @@
+{% extends 'share_layout.html' %}
+{% load static price_filters %}
+{% block title %}Về Chúng Tôi - Tourify{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* 1. Hero Banner */
+    .about-hero-banner {
+        background: linear-gradient(rgba(13, 34, 64, 0.6), rgba(13, 34, 64, 0.4)), 
+                    url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-4.0.3&auto=format&fit=crop&w=1921&q=80');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        padding: 120px 0 150px 0;
+        color: white;
+        text-align: center;
+    }
+
+    .about-hero-banner h1 {
+        font-weight: 800;
+        font-size: 3.5rem;
+        letter-spacing: 1px;
+        text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+    }
+
+    /* 2. Floating Stats (Khối thống kê nổi) */
+    .floating-stats-wrapper {
+        margin-top: -70px;
+        position: relative;
+        z-index: 10;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px 20px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        height: 100%;
+        transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-number {
+        color: #0d6efd;
+        font-weight: 800;
+        font-size: 2.2rem;
+        margin-bottom: 5px;
+    }
+
+    /* 3. Story Section */
+    .story-image {
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        width: 100%;
+        object-fit: cover;
+    }
+
+    /* 4. Mission & Core Values Section */
+    .bg-light-blue {
+        background-color: #f8faff;
+    }
+
+    .mission-card, .core-card {
+        background: white;
+        border-radius: 15px;
+        padding: 40px 30px;
+        height: 100%;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(13, 110, 253, 0.05);
+    }
+
+    .mission-card:hover, .core-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(13, 110, 253, 0.12);
+        border-color: rgba(13, 110, 253, 0.2);
+    }
+
+    .icon-circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        background: linear-gradient(135deg, rgba(13,110,253,0.1) 0%, rgba(13,110,253,0.2) 100%);
+        color: #0d6efd;
+        font-size: 30px;
+        transition: transform 0.3s;
+    }
+
+    .core-card:hover .icon-circle {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    /* 5. Team Section */
+    .team-avatar {
+        width: 90px; 
+        height: 90px; 
+        border-radius: 50%; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        font-weight: 700; 
+        color: #fff; 
+        font-size: 1.5rem;
+        margin: 0 auto 15px;
+        background: linear-gradient(135deg, #0d6efd 0%, #00d4ff 100%);
+        box-shadow: 0 8px 20px rgba(13, 110, 253, 0.3);
+    }
+
+    .team-card {
+        padding: 20px;
+        text-align: center;
+    }
+
+    /* 6. CTA Banner */
+    .cta-banner {
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+        border-radius: 20px;
+        padding: 50px;
+        color: white;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(13, 110, 253, 0.2);
+    }
+
+    @media (max-width: 768px) {
+        .about-hero-banner h1 { font-size: 2.5rem; }
+        .floating-stats-wrapper { margin-top: -30px; }
+        .stat-card { margin-bottom: 15px; }
+    }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<section class="about-hero-banner">
+    <div class="container">
+        <h1 class="mb-3">Về Chúng Tôi</h1>
+        <p class="fs-5 fw-light mx-auto" style="max-width: 700px; opacity: 0.9;">
+            Tourify - Đối tác đáng tin cậy cho mọi hành trình khám phá của bạn. Cùng chúng tôi vẽ nên những kỷ niệm khó quên trên mọi nẻo đường.
+        </p>
+    </div>
+</section>
+
+<section class="floating-stats-wrapper container">
+    <div class="row g-4">
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">50K+</div>
+                <div class="text-muted small fw-bold text-uppercase">Khách hàng</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">200+</div>
+                <div class="text-muted small fw-bold text-uppercase">Tour du lịch</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">10+</div>
+                <div class="text-muted small fw-bold text-uppercase">Năm kinh nghiệm</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">4.9/5</div>
+                <div class="text-muted small fw-bold text-uppercase">Đánh giá sao</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container py-5 mt-4">
+    <div class="row align-items-center gy-5">
+        <div class="col-lg-6 pe-lg-5">
+            <h6 class="text-primary fw-bold text-uppercase mb-2">Câu chuyện của Tourify</h6>
+            <h2 class="fw-bold mb-4" style="color: #2c3e50;">Hành Trình Chinh Phục Thế Giới</h2>
+            
+            <p class="text-muted lh-lg" style="text-align:justify;">
+                Được thành lập từ niềm đam mê khám phá, <strong>Tourify</strong> luôn nỗ lực mang đến cho khách hàng những trải nghiệm du lịch độc đáo và ý nghĩa. Chúng tôi kết hợp kiến thức địa phương, hướng dẫn chuyên nghiệp và dịch vụ chăm sóc tận tâm để đảm bảo mỗi hành trình đều an toàn và đáng nhớ.
+            </p>
+            <p class="text-muted lh-lg" style="text-align:justify;">
+                Đội ngũ của chúng tôi gồm những người yêu du lịch, có kinh nghiệm và am hiểu về các điểm đến trên khắp Việt Nam và quốc tế. Chúng tôi cam kết đồng hành cùng bạn từ khâu lên kế hoạch cho tới khi kết thúc hành trình.
+            </p>
+            
+            <div class="mt-4 border-start border-4 border-primary ps-3">
+                <p class="fst-italic text-dark mb-0 fw-medium">
+                    "Hãy để Tourify biến giấc mơ du lịch của bạn thành hiện thực — an toàn, chuyên nghiệp và tràn đầy cảm hứng."
+                </p>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <img src="https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Tourify team" class="story-image">
+        </div>
+    </div>
+</section>
+
+<section class="bg-light-blue py-5">
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold" style="color: #2c3e50;">Kim Chỉ Nam Hoạt Động</h2>
+            <p class="text-muted">Định hướng dẫn lối cho mọi dịch vụ tại Tourify</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="mission-card text-center">
+                    <div class="icon-circle"><i class="fas fa-bullseye"></i></div>
+                    <h4 class="fw-bold mb-3">Sứ Mệnh</h4>
+                    <p class="text-muted mb-0">Mang đến trải nghiệm du lịch an toàn, trọn vẹn và cá nhân hóa cho mọi hành trình, giúp khách hàng kết nối sâu sắc với điểm đến.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mission-card text-center">
+                    <div class="icon-circle"><i class="fas fa-eye"></i></div>
+                    <h4 class="fw-bold mb-3">Tầm Nhìn</h4>
+                    <p class="text-muted mb-0">Trở thành nền tảng du lịch uy tín hàng đầu, kết nối cộng đồng khám phá bền vững và trải nghiệm đa dạng trên toàn châu Á.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mission-card text-center">
+                    <div class="icon-circle"><i class="fas fa-handshake"></i></div>
+                    <h4 class="fw-bold mb-3">Cam Kết</h4>
+                    <p class="text-muted mb-0">Luôn đặt khách hàng làm trọng tâm, cung cấp dịch vụ minh bạch, linh hoạt và hỗ trợ tận tâm trước, trong và sau chuyến đi.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured tours: show tours added by user -->
+<section class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold" style="color: #2c3e50;">Các Tour Nổi Bật</h2>
+        <p class="text-muted">Những tour bạn đã thêm — chọn để xem chi tiết và đặt ngay.</p>
+    </div>
+
+    <div class="row g-4">
+        {% for tour in featured_tours %}
+        <div class="col-md-3 col-sm-6">
+            <div class="card h-100 border-0 shadow-sm">
+                <a href="{% url 'tour_detail' tour.id %}">
+                    <img src="{% if tour.thumbnail %}{{ tour.thumbnail.url }}{% else %}{% static 'images/placeholder-tour.svg' %}{% endif %}" class="card-img-top" style="height:180px; object-fit:cover; border-top-left-radius: .5rem; border-top-right-radius: .5rem;" alt="{{ tour.title }}">
+                </a>
+                <div class="card-body">
+                    <h6 class="card-title fw-bold mb-1" style="font-size:1rem;"><a href="{% url 'tour_detail' tour.id %}" class="text-decoration-none text-dark">{{ tour.title }}</a></h6>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-muted small">{{ tour.duration_days|default:'-' }}</div>
+                        <div class="text-primary fw-bold">{{ tour.price|currency_vnd }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-muted text-center">Hiện chưa có tour nào được thêm. Bạn có thể tạo tour mới trong trang quản trị.</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="container py-5 mt-4">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold" style="color: #2c3e50;">Giá Trị Cốt Lõi</h2>
+        <p class="text-muted">Những điều làm nên sự khác biệt của chúng tôi</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-3 col-sm-6">
+            <div class="core-card text-center text-md-start">
+                <div class="icon-circle mx-md-0"><i class="fas fa-shield-alt"></i></div>
+                <h5 class="fw-bold mb-2">An Toàn</h5>
+                <p class="text-muted small mb-0">Đảm bảo an toàn tuyệt đối cho mọi khách hàng trong suốt hành trình.</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="core-card text-center text-md-start">
+                <div class="icon-circle mx-md-0"><i class="fas fa-award"></i></div>
+                <h5 class="fw-bold mb-2">Chất Lượng</h5>
+                <p class="text-muted small mb-0">Cam kết chất lượng dịch vụ 5 sao với đội ngũ cực kỳ chuyên nghiệp.</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="core-card text-center text-md-start">
+                <div class="icon-circle mx-md-0"><i class="fas fa-heart"></i></div>
+                <h5 class="fw-bold mb-2">Tận Tâm</h5>
+                <p class="text-muted small mb-0">Phục vụ khách hàng bằng cả trái tim và sự nhiệt huyết cao nhất.</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="core-card text-center text-md-start">
+                <div class="icon-circle mx-md-0"><i class="fas fa-globe"></i></div>
+                <h5 class="fw-bold mb-2">Đa Dạng</h5>
+                <p class="text-muted small mb-0">Hàng trăm điểm đến và tour du lịch phong phú cho mọi sở thích.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container py-5 mb-5 border-top">
+    <div class="row align-items-center gy-5">
+       
+    <div class="row mt-5 pt-3">
+        <div class="col-12">
+            <div class="cta-banner d-flex flex-column flex-md-row align-items-center justify-content-between">
+                <div class="text-start mb-4 mb-md-0">
+                    <h3 class="fw-bold mb-2">Sẵn sàng cho chuyến đi tiếp theo?</h3>
+                    <p class="mb-0 opacity-75 fs-5">Khám phá tour phù hợp và để chúng tôi lo phần còn lại.</p>
+                </div>
+                <div>
+                    <a href="{% url 'home' %}" class="btn btn-light btn-lg fw-bold text-primary px-5 rounded-pill shadow-sm">
+                        Khám Phá Ngay <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

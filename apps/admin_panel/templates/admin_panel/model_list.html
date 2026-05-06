@@ -1,0 +1,324 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% load admin_panel_filters %}
+
+{% block admin_page %}
+<style>
+    /* KHỐI TÌM KIẾM: Phong cách Đặt vé Hàng không */
+    .travel-search-box {
+        background: linear-gradient(135deg, #02aab0 0%, #00cdac 100%);
+        border-radius: 20px;
+        padding: 1.8rem 2rem;
+        box-shadow: 0 10px 25px rgba(0, 205, 172, 0.25);
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    /* Icon máy bay chìm làm background */
+    .travel-search-box::after {
+        content: '\f0fb'; /* fa-plane */
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        position: absolute;
+        right: 10px;
+        bottom: -20px;
+        font-size: 8rem;
+        color: rgba(255, 255, 255, 0.15);
+        transform: rotate(-15deg);
+        pointer-events: none;
+    }
+
+    .travel-search-box .form-label {
+        color: #e0fbfc;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.8rem;
+    }
+
+    .travel-search-box .form-control {
+        border-radius: 12px;
+        border: none;
+        padding: 0.75rem 1.25rem;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        background-color: rgba(255, 255, 255, 0.95);
+        font-weight: 500;
+    }
+
+    .travel-search-box .form-control:focus {
+        background-color: #fff;
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-search-travel {
+        background-color: #ff9f43; /* Màu cam nhiệt đới */
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        box-shadow: 0 4px 15px rgba(255, 159, 67, 0.4);
+        transition: all 0.3s ease;
+    }
+
+    .btn-search-travel:hover {
+        background-color: #ff8c1a;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 159, 67, 0.5);
+        color: white;
+    }
+
+    /* BẢNG DỮ LIỆU: Phong cách Vé Hành Khách (Boarding Pass) */
+    .ticket-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .ticket-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 12px; /* Tách rời các dòng thành từng vé riêng biệt */
+    }
+
+    .ticket-table thead th {
+        border: none;
+        color: #64748b;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        padding: 0 1.5rem 0.5rem 1.5rem;
+        letter-spacing: 0.5px;
+    }
+
+    .ticket-table tbody tr {
+        background-color: #fff;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .ticket-table tbody tr:hover {
+        transform: scale(1.005);
+        box-shadow: 0 8px 25px rgba(2, 170, 176, 0.15);
+    }
+
+    .ticket-table tbody td {
+        padding: 1.2rem 1.5rem;
+        vertical-align: middle;
+        border-top: 1px solid #f1f5f9;
+        border-bottom: 1px solid #f1f5f9;
+        color: #2c3e50;
+    }
+
+    /* Bo góc và viền màu cho đầu vé */
+    .ticket-table tbody td:first-child {
+        border-left: 5px solid #02aab0;
+        border-top-left-radius: 15px;
+        border-bottom-left-radius: 15px;
+        font-weight: 700;
+    }
+
+    /* Tạo nếp gấp đứt đoạn (dashed) cho cuống vé chứa nút thao tác */
+    .ticket-table tbody td:last-child {
+        border-right: 1px solid #f1f5f9;
+        border-top-right-radius: 15px;
+        border-bottom-right-radius: 15px;
+        border-left: 2px dashed #cbd5e1; /* Nét đứt xé vé */
+        background-color: #f8fafc;
+        width: 220px;
+    }
+
+    /* Nút Thao tác mini */
+    .btn-action-sm {
+        width: 35px;
+        height: 35px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        border: none;
+        color: #fff;
+    }
+
+    .btn-edit { background: #3498db; box-shadow: 0 3px 8px rgba(52,152,219,0.3); }
+    .btn-edit:hover { background: #2980b9; transform: translateY(-2px); color: white;}
+
+    .btn-delete { background: #e74c3c; box-shadow: 0 3px 8px rgba(231,76,60,0.3); }
+    .btn-delete:hover { background: #c0392b; transform: translateY(-2px); color: white;}
+
+    .btn-view { background: #2ecc71; box-shadow: 0 3px 8px rgba(46,204,113,0.3); }
+    .btn-view:hover { background: #27ae60; transform: translateY(-2px); color: white;}
+
+    /* Phân trang kiểu La bàn */
+    .modern-pagination .page-link {
+        border-radius: 50% !important;
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 5px;
+        border: none;
+        color: #64748b;
+        font-weight: 700;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .modern-pagination .page-item.active .page-link {
+        background: linear-gradient(135deg, #02aab0, #00cdac);
+        color: #fff;
+        box-shadow: 0 4px 15px rgba(2, 170, 176, 0.4);
+    }
+</style>
+
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h3 class="mb-1 fw-bold text-dark">
+            <i class="fas fa-map-marked-alt text-primary me-2"></i>Quản lý {{ config.label }}
+        </h3>
+        <div class="text-muted fw-medium small">
+            <i class="fas fa-satellite-dish me-1 text-success"></i> Radar tìm thấy {{ page_obj.paginator.count }} dữ liệu hành trình
+        </div>
+    </div>
+
+    <div>
+        <a class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm" href="{% url 'admin_panel:model_create' model_key=config.key %}" style="background: linear-gradient(135deg, #0d6efd, #0098f0); border: none;">
+            <i class="fas fa-plus-circle me-1"></i> Thêm {{ config.label }} mới
+        </a>
+        {% if config.key == 'tours' %}
+            <a class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-bold ms-2" href="{% url 'admin_panel:model_import' model_key=config.key %}">
+                <i class="fas fa-file-import me-1"></i> Nhập Excel
+            </a>
+            <a class="btn btn-outline-success rounded-pill px-4 py-2 fw-bold ms-2" href="?q={{ q }}&export=xlsx" title="Xuất Excel (XLSX)">
+                <i class="fas fa-file-excel me-1"></i> Xuất Excel
+            </a>
+        {% endif %}
+        {% if config.key == 'payments' %}
+            <a class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-bold ms-2" href="?q={{ q }}&export=csv" title="Xuất Excel (CSV)">
+                <i class="fas fa-file-export me-1"></i> Xuất Excel
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<form method="get" class="travel-search-box">
+    <div class="row g-3 align-items-end position-relative z-1">
+        <div class="col-md-6">
+            <label class="form-label"><i class="fas fa-search-location me-1"></i> Nhập thông tin tìm kiếm</label>
+            <input name="q" value="{{ q }}" class="form-control" placeholder="Tên địa điểm, mã vé, từ khóa..." />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label"><i class="far fa-file-alt me-1"></i> Trang số</label>
+            <input name="page" value="{{ page_obj.number }}" class="form-control text-center" type="number" min="1" />
+        </div>
+        <div class="col-md-3">
+            <button class="btn-search-travel w-100">
+                <i class="fas fa-paper-plane me-1"></i> Dò tìm
+            </button>
+        </div>
+    </div>
+</form>
+
+<div class="ticket-table-wrapper">
+    <table class="ticket-table">
+        <thead>
+            <tr>
+                {% for col in columns %}
+                    <th>{{ col.label }}</th>
+                {% endfor %}
+                <th class="text-center"><i class="fas fa-cog"></i> Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+                <tr>
+                    {% for col in columns %}
+                        {% with value=row|get_item:col.key %}
+                            <td>{{ value|default_if_none:"-" }}</td>
+                        {% endwith %}
+                    {% endfor %}
+                    
+                    <td>
+                        <div class="d-flex gap-2 justify-content-center">
+                            <a class="btn-action-sm {% if config.key == 'contacts' or config.key == 'bookings' %}btn-view{% else %}btn-edit{% endif %}" 
+                               href="{% url 'admin_panel:model_edit' model_key=config.key pk=row.id %}" 
+                               title="{% if config.key == 'contacts' or config.key == 'bookings' %}Xem chi tiết{% else %}Chỉnh sửa{% endif %}">
+                                {% if config.key == 'contacts' or config.key == 'bookings' %}
+                                    <i class="fas fa-eye"></i>
+                                {% else %}
+                                    <i class="fas fa-pen"></i>
+                                {% endif %}
+                            </a>
+
+                            {% if config.key == 'bookings' %}
+                                <form method="post" action="{% url 'admin_panel:model_edit' model_key=config.key pk=row.id %}" style="display:inline-block;margin:0;">
+                                    {% csrf_token %}
+                                    {% if row.payment_verified %}
+                                        <button type="submit" name="verify_payment" value="0" class="btn-action-sm btn-delete" title="Hủy xác nhận thanh toán" onclick="return confirm('Hủy duyệt thanh toán vé này?');">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    {% else %}
+                                        <button type="submit" name="verify_payment" value="1" class="btn-action-sm btn-view" title="Xác nhận đã thanh toán" onclick="return confirm('Xác nhận khách đã thanh toán tiền vé?');">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    {% endif %}
+                                </form>
+                            {% endif %}
+
+                            <a class="btn-action-sm btn-delete" href="{% url 'admin_panel:model_delete' model_key=config.key pk=row.id %}" title="Xóa bản ghi">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="100%" class="text-center py-5" style="border: none; background: transparent; box-shadow: none;">
+                        <div class="text-muted">
+                            <i class="fas fa-plane-slash fs-1 mb-3 opacity-50 text-secondary"></i>
+                            <h5 class="fw-bold">Chưa có hành trình nào</h5>
+                            <p>Không tìm thấy dữ liệu trên Radar. Hãy thử lại hoặc tạo mới!</p>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-4 mb-2">
+    {% if page_obj.has_other_pages %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination modern-pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?q={{ q }}&page={{ page_obj.previous_page_number }}" title="Trang trước">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if num == page_obj.number %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                    {% elif num >= page_obj.number|add:-2 and num <= page_obj.number|add:2 %}
+                        <li class="page-item">
+                            <a class="page-link" href="?q={{ q }}&page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?q={{ q }}&page={{ page_obj.next_page_number }}" title="Trang tiếp">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+</div>
+{% endblock admin_page %}

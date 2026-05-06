@@ -1,0 +1,375 @@
+{% extends 'share_layout.html' %} {% load static price_filters %} {% block content %}
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css"
+/>
+
+<style>
+  body {
+    background-color: #f8f9fa;
+  }
+
+  /* Custom popup styling */
+  .custom-popup .leaflet-popup-content-wrapper {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    /* outer white border to separate popup from map */
+    border: 6px solid #ffffff;
+    padding: 8px; /* inner spacing so content doesn't touch white border */
+    background-clip: padding-box;
+  }
+
+  .custom-popup .leaflet-popup-tip {
+    background: #ffffff;
+    /* match outer white border for the tip */
+    border: 6px solid #ffffff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  .custom-popup .leaflet-popup-content {
+    margin: 0;
+  }
+
+  /* Marker animation */
+  .custom-marker {
+    transition: filter 0.3s ease;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+  }
+
+  .detail-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    border-radius: 1rem;
+    display: block;
+  }
+
+  .info-list {
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .info-list li {
+    margin-bottom: 1rem;
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .info-icon {
+    width: 35px;
+    height: 35px;
+    background-color: rgba(13, 110, 253, 0.1);
+    color: #0d6efd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    font-size: 0.9rem;
+  }
+
+  /* Tối ưu khung bản đồ để không bị tràn viền bo góc */
+  #map {
+    height: 100%;
+    min-height: 450px; /* Tăng chiều cao để bảng Routing Machine hiển thị đẹp hơn */
+    border-radius: 1rem;
+    z-index: 1;
+    border: 1px solid #e2e8f0;
+  }
+
+  /* Style lại bảng lịch trình */
+  .table-custom th {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    padding: 1rem;
+    border-bottom: none;
+  }
+  .table-custom td {
+    vertical-align: middle;
+    padding: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .table-custom tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* Image wrapper to control visible size and responsivity */
+  .image-wrap {
+    width: 100%;
+    height: 100%;
+    min-height: 320px;
+    overflow: hidden;
+    border-radius: 1rem;
+    position: relative;
+  }
+
+  @media (min-width: 768px) {
+    .image-wrap {
+      min-height: 420px;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .image-wrap {
+      min-height: 520px;
+    }
+  }
+
+  /* Pull the detail card slightly to the left on large screens to enlarge image */
+  .detail-card {
+    position: relative;
+    overflow: visible;
+  }
+  @media (min-width: 992px) {
+    .detail-card {
+      margin-left: -60px;
+      padding-left: 1.5rem;
+    }
+    .detail-card .image-wrap {
+      min-height: 560px;
+    }
+  }
+</style>
+
+
+<div class="container py-5">
+  <div class="row g-4 mb-5 align-items-stretch">
+    <div class="col-lg-7">
+      <div class="card detail-card border-0 shadow-sm rounded-4 h-100 p-4">
+        <div class="row g-4 h-100">
+          <div class="col-md-6 d-flex">
+            <div class="image-wrap position-relative flex-fill">
+              <img
+                src="{% if images and images|length > 0 %}{{ images.0.image.url }}{% elif tour.thumbnail %}{{ tour.thumbnail.url }}{% else %}{% static 'images/placeholder-tour.svg' %}{% endif %}"
+                alt="{{ tour.title }}"
+                class="detail-img shadow-sm"
+                style="cursor: pointer; width: 100%; height: 100%"
+                data-bs-toggle="modal"
+                data-bs-target="#galleryModal"
+              />
+                {% if images|length > 1 %}
+                <span
+                class="position-absolute top-0 start-0 badge bg-dark bg-opacity-75 text-white m-3"
+                >+{{ images|length }}</span
+                >
+                {% endif %}
+              </div>
+              </div>
+          <div class="col-md-6 d-flex flex-column">
+            <h2
+              class="fw-bold mb-2"
+              style="text-transform: capitalize; color: #1e293b"
+            >
+              {{ tour.title }}
+            </h2>
+
+            <ul class="info-list mt-auto mb-0">
+              <li>
+                <div class="info-icon">
+                  <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div>
+                  <small class="text-muted d-block" style="font-size: 0.8rem"
+                    >Giá</small
+                  ><strong class="text-danger fs-5"
+                    >{{ tour.price|currency_vnd }}</strong
+                  >
+                </div>
+              </li>
+              <li>
+                <div class="info-icon"><i class="fas fa-th-large"></i></div>
+                <div>
+                  <small class="text-muted d-block" style="font-size: 0.8rem"
+                    >Danh mục</small
+                  ><span class="fw-medium">{{ tour.category }}</span>
+                </div>
+              </li>
+              <li>
+                <div class="info-icon">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div>
+                  <small class="text-muted d-block" style="font-size: 0.8rem"
+                    >Quốc gia</small
+                  ><span class="fw-medium">{{ tour.country }}</span>
+                </div>
+              </li>
+              <li>
+                <div class="info-icon"><i class="far fa-clock"></i></div>
+                <div>
+                  <small class="text-muted d-block" style="font-size: 0.8rem"
+                    >Số ngày</small
+                  ><span class="fw-medium"
+                    >{{ tour.duration_days|default:"Chưa có thông tin" }}</span
+                  >
+                </div>
+              </li>
+              <li>
+                <div class="info-icon"><i class="fas fa-users"></i></div>
+                <div>
+                  <small class="text-muted d-block" style="font-size: 0.8rem"
+                    >Số người</small
+                  ><span class="fw-medium">{{ tour.max_people }} người</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div
+        class="card border-0 shadow-sm rounded-4 h-100 p-4 d-flex flex-column"
+      >
+        <h4 class="fw-bold mb-3">
+          <i class="fas fa-route text-primary me-2"></i>Các điểm đến
+        </h4>
+        <div class="flex-grow-1 position-relative">
+          <div id="map"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-muted fst-italic mb-4 lh-base">
+    {{ tour.description|safe }}
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5">
+    <h3 class="fw-bold mb-4 border-bottom pb-3">
+      <i class="far fa-calendar-alt text-primary me-2"></i>Lịch trình chi tiết
+    </h3>
+
+    <div class="table-responsive">
+      <table class="table table-custom table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th class="text-center rounded-start">STT</th>
+            <th>Ngày bắt đầu</th>
+            <th>Ngày kết thúc</th>
+            <th class="text-center">Số lượng (chỗ)</th>
+            <th>Giá</th>
+            <th class="text-center rounded-end">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for schedule in schedules %}
+          <tr>
+            <td class="text-center text-muted fw-bold">
+              {{ forloop.counter }}
+            </td>
+            <td class="fw-medium">{{ schedule.start_day }}</td>
+            <td class="fw-medium">{{ schedule.end_day }}</td>
+            <td class="text-center">
+              <span
+                class="badge {% if schedule.total_slots > 0 %}bg-success bg-opacity-10 text-success{% else %}bg-danger bg-opacity-10 text-danger{% endif %} px-3 py-2 rounded-pill fs-6"
+              >
+                {{ schedule.total_slots }}
+              </span>
+            </td>
+            <td class="text-danger fw-bold">{{ tour.price|currency_vnd }}</td>
+            <td class="text-center">
+              {% if schedule.total_slots > 0 %}
+              <a
+                href="{% url 'booking_confirm' schedule.id %}"
+                class="btn btn-primary rounded-pill fw-bold px-4"
+              >
+                ĐẶT CHUYẾN
+              </a>
+              {% else %}
+              <button class="btn btn-secondary rounded-pill px-4" disabled>
+                Hết chỗ
+              </button>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="text-center py-4 text-muted">
+              Hiện chưa có lịch trình nào cho tour này.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
+<!-- Gallery modal (Bootstrap) -->
+<div class="modal fade" id="galleryModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content bg-transparent border-0">
+      <div class="modal-body p-0">
+        <div
+          id="galleryCarousel"
+          class="carousel slide"
+          data-bs-ride="carousel"
+        >
+          <div class="carousel-inner">
+            {% for img in images %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+              <img
+                src="{{ img.image.url }}"
+                class="d-block w-100"
+                alt="{{ img.caption }}"
+              />
+              {% if img.caption %}
+              <div class="carousel-caption d-none d-md-block">
+                <p>{{ img.caption }}</p>
+              </div>
+              {% endif %}
+            </div>
+            {% empty %}
+            <div class="carousel-item active">
+              <img
+                src="{% if tour.thumbnail %}{{ tour.thumbnail.url }}{% else %}{% static 'images/placeholder-tour.svg' %}{% endif %}"
+                class="d-block w-100"
+                alt="{{ tour.title }}"
+              />
+            </div>
+            {% endfor %}
+          </div>
+          <button
+            class="carousel-control-prev"
+            type="button"
+            data-bs-target="#galleryCarousel"
+            data-bs-slide="prev"
+          >
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button
+            class="carousel-control-next"
+            type="button"
+            data-bs-target="#galleryCarousel"
+            data-bs-slide="next"
+          >
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer border-0 justify-content-center">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="{% static 'js/map.js' %}"></script>
+{% endblock %}

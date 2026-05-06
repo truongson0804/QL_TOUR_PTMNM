@@ -1,0 +1,277 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% load static %}
+
+{% block admin_page %}
+<style>
+    /* Bảng màu và hiệu ứng chung */
+    .tour-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background: #ffffff;
+    }
+    .tour-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    }
+    
+    /* Icon thống kê */
+    .stat-icon-wrapper {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    /* Các dải màu Gradient đặc trưng */
+    .bg-gradient-ocean { background: linear-gradient(135deg, #0288d1, #26c6da); color: white; }
+    .bg-gradient-sunset { background: linear-gradient(135deg, #ff7e5f, #feb47b); color: white; }
+    .bg-gradient-forest { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; }
+    .bg-gradient-royal { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+
+    /* Custom Table */
+    .tour-table th {
+        background-color: #f8f9fa;
+        color: #6c757d;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #e9ecef;
+    }
+    .tour-table td {
+        vertical-align: middle;
+        font-size: 0.95rem;
+    }
+    
+    /* Custom Badges cho Trạng thái */
+    .badge-status {
+        padding: 0.5em 0.8em;
+        border-radius: 30px;
+        font-weight: 500;
+        font-size: 0.8rem;
+    }
+    .badge-CONFIRMED { background-color: #d1e7dd; color: #0f5132; }
+    .badge-PENDING { background-color: #fff3cd; color: #856404; }
+    .badge-CANCELLED { background-color: #f8d7da; color: #842029; }
+    /* Revenue filter/export styling */
+    .revenue-filter-form {
+        white-space: nowrap;
+    }
+    .revenue-export-btn {
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+    }
+    /* Slight left shift for the filter block when displayed in the header */
+    .revenue-filter-wrap { margin-right: 1rem; }
+</style>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="tour-card p-4 d-flex justify-content-between align-items-center" style="background: linear-gradient(to right, #ffffff, #e0f2fe);">
+            <div class="d-flex align-items-center">
+                <div class="stat-icon-wrapper bg-gradient-ocean me-3 mb-0" style="width: 50px; height: 50px;">
+                    <i class="fas fa-plane-departure"></i>
+                </div>
+                <div>
+                    <h3 class="mb-1 fw-bold text-dark">Báo Cáo Doanh Thu</h3>
+                    <div class="text-muted small"><i class="fas fa-globe-americas me-1"></i>Tổng hợp hành trình & doanh thu hệ thống Tourify</div>
+                </div>
+            </div>
+            <div class="revenue-filter-wrap">
+                <form method="get" class="d-flex align-items-center gap-2 revenue-filter-form flex-nowrap">
+                    <select name="year" class="form-select form-select-sm">
+                        <option value="">Tất cả năm</option>
+                        {% for y in years %}
+                            <option value="{{ y }}" {% if selected_year|default:'' == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select name="month" class="form-select form-select-sm">
+                        <option value="all" {% if not selected_month %}selected{% endif %}>Tất cả tháng</option>
+                        <option value="1" {% if selected_month == '1' %}selected{% endif %}>Tháng 1</option>
+                        <option value="2" {% if selected_month == '2' %}selected{% endif %}>Tháng 2</option>
+                        <option value="3" {% if selected_month == '3' %}selected{% endif %}>Tháng 3</option>
+                        <option value="4" {% if selected_month == '4' %}selected{% endif %}>Tháng 4</option>
+                        <option value="5" {% if selected_month == '5' %}selected{% endif %}>Tháng 5</option>
+                        <option value="6" {% if selected_month == '6' %}selected{% endif %}>Tháng 6</option>
+                        <option value="7" {% if selected_month == '7' %}selected{% endif %}>Tháng 7</option>
+                        <option value="8" {% if selected_month == '8' %}selected{% endif %}>Tháng 8</option>
+                        <option value="9" {% if selected_month == '9' %}selected{% endif %}>Tháng 9</option>
+                        <option value="10" {% if selected_month == '10' %}selected{% endif %}>Tháng 10</option>
+                        <option value="11" {% if selected_month == '11' %}selected{% endif %}>Tháng 11</option>
+                        <option value="12" {% if selected_month == '12' %}selected{% endif %}>Tháng 12</option>
+                    </select>
+
+                    <button type="submit" class="btn btn-primary btn-sm">Lọc</button>
+                    <button type="submit" name="export" value="xlsx" class="btn btn-success btn-sm revenue-export-btn">
+                        <i class="fas fa-file-excel"></i>
+                        <span class="d-none d-sm-inline">Xuất Excel</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="tour-card p-4 text-center">
+            <div class="d-flex justify-content-center">
+                <div class="stat-icon-wrapper bg-gradient-ocean shadow-sm">
+                    <i class="fas fa-wallet"></i>
+                </div>
+            </div>
+            <div class="text-muted small fw-bold text-uppercase mb-2">Tổng doanh thu</div>
+            <div class="h4 fw-bold text-dark">{{ total_revenue|default:"0.00" }} <span class="fs-6 text-muted">VND</span></div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="tour-card p-4 text-center">
+            <div class="d-flex justify-content-center">
+                <div class="stat-icon-wrapper bg-gradient-sunset shadow-sm">
+                    <i class="fas fa-sun"></i>
+                </div>
+            </div>
+            <div class="text-muted small fw-bold text-uppercase mb-2">Hôm nay</div>
+            <div class="h4 fw-bold text-dark">{{ today_revenue|default:"0.00" }} <span class="fs-6 text-muted">VND</span></div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="tour-card p-4 text-center">
+            <div class="d-flex justify-content-center">
+                <div class="stat-icon-wrapper bg-gradient-forest shadow-sm">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+            </div>
+            <div class="text-muted small fw-bold text-uppercase mb-2">Tháng này</div>
+            <div class="h4 fw-bold text-dark">{{ month_revenue|default:"0.00" }} <span class="fs-6 text-muted">VND</span></div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="tour-card p-4 text-center">
+            <div class="d-flex justify-content-center">
+                <div class="stat-icon-wrapper bg-gradient-royal shadow-sm">
+                    <i class="fas fa-ticket-alt"></i>
+                </div>
+            </div>
+            <div class="text-muted small fw-bold text-uppercase mb-2">Tổng lượt đặt vé</div>
+            <div class="h4 fw-bold text-dark">{{ total_bookings }} <span class="fs-6 text-muted">Chuyến</span></div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4 g-4">
+    <div class="col-lg-6">
+        <div class="tour-card p-4 h-100">
+            <h5 class="fw-bold mb-4 text-secondary"><i class="fas fa-chart-pie me-2"></i>Tỉ Lệ Trạng Thái Booking</h5>
+            <ul class="list-unstyled mb-0">
+                {% for item in by_status %}
+                    <li class="d-flex justify-content-between align-items-center py-3 border-bottom">
+                        <span class="badge-status badge-{{ item.status|default:'PENDING' }}">
+                            {{ item.status|default:item.status }}
+                        </span>
+                        <span class="fw-bold text-dark">{{ item.cnt }} <span class="text-muted fw-normal small">đơn</span></span>
+                    </li>
+                {% empty %}
+                    <li class="text-muted py-2 text-center">Không có dữ liệu hành trình</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="tour-card p-4 h-100">
+            <h5 class="fw-bold mb-4 text-secondary"><i class="fas fa-fire-alt text-danger me-2"></i>Top Tour Được Yêu Thích</h5>
+            <ul class="list-unstyled mb-0">
+                {% for t in top_tours %}
+                    <li class="d-flex justify-content-between align-items-center py-3 border-bottom">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-light text-primary rounded d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                <i class="fas fa-map-marked-alt"></i>
+                            </div>
+                            <div class="fw-bold text-dark" style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                {{ t.title }}
+                            </div>
+                        </div>
+                        <div class="fw-bold text-success">{{ t.revenue|default:"0.00" }} <small class="text-muted fw-normal">VND</small></div>
+                    </li>
+                {% empty %}
+                    <li class="text-muted py-2 text-center">Chưa có hành trình nào nổi bật</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="tour-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold text-secondary mb-0"><i class="fas fa-suitcase-rolling me-2"></i>Danh Sách Khởi Hành Gần Đây</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover tour-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Mã Vé</th>
+                            <th>Khách Hàng</th>
+                            <th>Hành Trình (Tour)</th>
+                            <th>Khởi Hành</th>
+                            <th class="text-center">Số Khách</th>
+                            <th>Tổng Tiền</th>
+                            <th class="text-center">Trạng Thái</th>
+                            <th>Thời Gian Đặt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for b in latest_bookings %}
+                        <tr>
+                            <td class="fw-bold text-primary">#{{ b.id }}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle bg-light text-secondary d-flex justify-content-center align-items-center me-2" style="width: 32px; height: 32px;">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    {{ b.user.username }}
+                                </div>
+                            </td>
+                            <td class="fw-bold">{{ b.tour_schedule.tour.title }}</td>
+                            <td>
+                                {% if b.tour_schedule.start_day %}
+                                    <i class="far fa-calendar-alt text-muted me-1"></i> {{ b.tour_schedule.start_day|date:'d/m/Y H:i' }}
+                                {% else %}
+                                    <span class="text-muted">Chưa cập nhật</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-light text-dark border"><i class="fas fa-users me-1"></i>{{ b.total_people }}</span>
+                            </td>
+                            <td class="fw-bold text-success">{{ b.total_price }} ₫</td>
+                            <td class="text-center">
+                                <span class="badge-status badge-{{ b.status }}">{{ b.status }}</span>
+                            </td>
+                            <td class="text-muted small">{{ b.create_at|date:'d/m/Y H:i' }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center py-4 text-muted">
+                                <i class="fas fa-box-open fa-3x mb-3 text-light"></i>
+                                <p class="mb-0">Chưa có lượt đặt vé nào gần đây</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock admin_page %}

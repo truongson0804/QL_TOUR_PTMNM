@@ -1,0 +1,18 @@
+/venv
+__pycache__/
+*.pyc
+.vscode
+
+.idea
+
+.DS_Store
+*.log
+*.sqlite3
+media/
+
+.env/
+
+# Ignore dotenv file with credentials
+.env
+
+.idea/

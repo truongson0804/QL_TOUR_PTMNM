@@ -1,0 +1,388 @@
+{% extends 'share_layout.html' %}
+{% load static %}
+{% block title %}Đặt Tour - Tourify{% endblock %}
+
+{% block content %}
+<style>
+    /* Nền trang web mang hơi hướng du lịch */
+    .booking-page {
+        min-height: 100vh;
+        /* Nền xanh nhạt xen lẫn ảnh pattern mờ nếu cần, ở đây dùng gradient nhẹ */
+        background: linear-gradient(135deg, #f0f4f8 0%, #e0eaf5 100%);
+        padding-top: 4rem;
+        padding-bottom: 5rem;
+    }
+
+    /* Card hiển thị thông tin tour */
+    .tour-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden; /* Để ảnh phần top bo góc theo card */
+        box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Phần ảnh header của Tour Card - dùng thẻ IMG để dễ crop và responsive */
+    .tour-image-header {
+        height: 280px;
+        position: relative;
+        overflow: hidden;
+        background-color: #f3f6f9;
+    }
+
+    .tour-image-header img.tour-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* crop vừa khung */
+        object-position: center;
+        display: block;
+        transition: transform 0.6s ease;
+    }
+
+    .tour-image-header:hover img.tour-img {
+        transform: scale(1.03);
+    }
+
+    /* Lớp phủ mờ trên ảnh để chữ dễ đọc (nhẹ, không che ảnh quá nhiều) */
+    .tour-image-overlay {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.45) 100%);
+        display: flex;
+        align-items: flex-end;
+        padding: 1.5rem;
+        color: #fff;
+    }
+
+    @media (max-width: 992px) {
+        .tour-image-header { height: 200px; }
+    }
+    @media (max-width: 576px) {
+        .tour-image-header { height: 160px; }
+    }
+
+    .tour-info-icon {
+        width: 45px;
+        height: 45px;
+        background-color: rgba(13, 110, 253, 0.1);
+        color: #0d6efd;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+    }
+
+    /* Tag giá tiền nổi bật */
+    .price-box {
+        background: linear-gradient(135deg, #ff7e5f, #feb47b);
+        color: white;
+        border-radius: 15px;
+        padding: 1.2rem;
+        box-shadow: 0 5px 15px rgba(255, 126, 95, 0.3);
+    }
+
+    .price-tag {
+        font-weight: 800;
+        font-size: 1.8rem;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    /* Form Đặt Tour */
+    .booking-form-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+        background: white;
+    }
+
+    .booking-form-card .form-control, 
+    .booking-form-card .form-select,
+    .booking-form-card .input-group-text {
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        padding: 12px 15px;
+        background-color: #f8fafc;
+    }
+
+    .booking-form-card .form-control:focus,
+    .booking-form-card .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+        background-color: #fff;
+    }
+
+    .btn-confirm {
+        background-color: #0d6efd;
+        border: none;
+        border-radius: 12px;
+        padding: 15px;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-confirm:hover {
+        background-color: #0b5ed7;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(13, 110, 253, 0.3);
+    }
+</style>
+
+<div class="booking-page">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="fw-bold text-dark" style="color: #2c3e50;">Hoàn Tất Đặt Chỗ <i class="fas fa-plane-departure text-primary ms-2"></i></h1>
+            <p class="text-muted fs-5">Chỉ còn vài bước nữa là bạn đã sẵn sàng cho chuyến đi tuyệt vời!</p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-5">
+                <div class="card tour-card h-100">
+                    <div class="tour-image-header">
+                        {% static 'images/placeholder-tour.svg' as placeholder_img %}
+
+                        <img class="tour-img"
+                            src="{% if tour.thumbnail %}{{ tour.thumbnail.url }}{% else %}{{ placeholder_img }}{% endif %}"
+                            alt="{{ tour.title|default:'Tour image' }}"
+                            onerror="this.onerror=null; this.src='{{ placeholder_img }}';" />
+
+                        <div class="tour-image-overlay">
+                            <h3 class="fw-bold text-white mb-0">
+                                <i class="fas fa-map-marker-alt text-warning me-2"></i>
+                                {{ tour.title|default:"Khám Phá Thiên Đường Biển Đảo Phú Quốc" }}
+                            </h3>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body p-4 d-flex flex-column">
+                        <ul class="list-unstyled mb-4 fs-6 mt-2">
+                            <li class="mb-4 d-flex align-items-center">
+                                <div class="tour-info-icon"><i class="far fa-calendar-check fs-5"></i></div>
+                                <div>
+                                    <small class="text-muted d-block fw-bold uppercase">Ngày khởi hành</small>
+                                    <span class="fw-bold fs-5" style="color: #2c3e50;">{{ tour_schedule.start_day|date:"j M Y, H:i" }}</span>
+                                </div>
+                            </li>
+                            <li class="mb-4 d-flex align-items-center">
+                                <div class="tour-info-icon"><i class="far fa-calendar-times fs-5"></i></div>
+                                <div>
+                                    <small class="text-muted d-block fw-bold uppercase">Ngày kết thúc</small>
+                                    <span class="fw-bold fs-5" style="color: #2c3e50;">{{ tour_schedule.end_day|date:"j M Y, H:i" }}</span>
+                                </div>
+                            </li>
+                            <li class="mb-4 d-flex align-items-center">
+                                <div class="tour-info-icon"><i class="fas fa-users fs-5"></i></div>
+                                <div>
+                                    <small class="text-muted d-block fw-bold uppercase">Số ghế còn trống</small>
+                                    <span class="fw-bold fs-5 text-success">{{ tour_schedule.total_slots|default:"5" }} ghế</span>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <div class="mt-auto price-box text-center">
+                            <span class="d-block mb-1 opacity-75 fw-medium">Giá tour / chuyến</span>
+                            <div class="price-tag">{{ tour.price|default:"3,500,000" }} VND</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="card booking-form-card p-4 p-md-5 h-100">
+                    <h4 class="fw-bold mb-4" style="color: #2c3e50;">
+                        <i class="fas fa-id-card text-primary me-2"></i> Thông tin hành khách
+                    </h4>
+                    
+                    <form id="booking-form" method="POST" action="{% url 'booking_create' %}" class="d-flex flex-column h-100">
+                        {% csrf_token %}
+                        <input type="hidden" name="tour_schedule_id" value="{{ tour_schedule.id }}" />
+                        
+                        <div class="row g-4 mb-4 mt-1">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-muted small">Số lượng người</label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-end-0"><i class="fas fa-user-friends text-primary"></i></span>
+                                    <input type="number" name="quantity" class="form-control border-start-0 ps-0" min="1" max="{{ tour_schedule.total_slots|default:'5' }}" placeholder="Nhập số lượng..." required>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-muted small">Phương thức thanh toán</label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-end-0"><i class="fas fa-wallet text-primary"></i></span>
+                                    <select id="id_payment" name="payment" class="form-select border-start-0 ps-0" required>
+                                        <option value="" disabled selected>Chọn phương thức...</option>
+                                        <option value="cash">Tiền mặt</option>
+                                        <option value="transfer">Chuyển khoản ngân hàng</option>
+                                        <option value="credit">Thẻ tín dụng / Ghi nợ</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Bank transfer QR block (hidden unless 'transfer' selected) -->
+                        <div id="bank-transfer-qr" class="mb-4" style="display:none;">
+                            <div class="card p-3 border rounded">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <img id="bank-qr-img" src="" alt="QR chuyển khoản" style="width:140px;height:140px;border-radius:8px;object-fit:contain;">
+                                    </div>
+                                    <div>
+                                        <strong>Chuyển khoản ngân hàng</strong>
+                                        <p class="mb-1">Ngân hàng: <span id="bank-name">[MB Bank]</span></p>
+                                        <p class="mb-1">Chủ tài khoản: <span id="bank-account-name">[Đậu Trường Sơn]</span></p>
+                                        <p class="mb-0">Số tài khoản: <span id="bank-account-number">[0935896559]</span></p>
+                                        <small class="text-muted d-block mt-2">Quét mã QR để chuyển tiền nhanh hoặc sao chép thông tin tài khoản.</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Data for QR (customize these values or set from view context) -->
+                        <div id="bank-transfer-data"
+                             data-bank-name="MB Bank"
+                             data-account-name="Đậu Trường Sơn"
+                             data-account-number="0935896559"
+                             data-amount="{{ tour.price|default:'' }}"
+                             data-note="Thanh toán đặt tour {{ tour.id }}"></div>
+
+                        <div class="mb-5">
+                            <label class="form-label fw-bold text-muted small">Ghi chú cho hướng dẫn viên (Tùy chọn)</label>
+                            <textarea name="notes" class="form-control" rows="5" placeholder="Ví dụ: Có người lớn tuổi, yêu cầu ăn chay, điểm đón riêng..."></textarea>
+                        </div>
+
+                        <div class="d-grid mt-auto">
+                            <button type="submit" class="btn btn-confirm text-white fw-bold">
+                                Xác Nhận Đặt Tour <i class="fas fa-arrow-right ms-2"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+(function(){
+    var paymentSelect = document.getElementById('id_payment');
+    if(!paymentSelect) return;
+    var qrDiv = document.getElementById('bank-transfer-qr');
+    var qrImg = document.getElementById('bank-qr-img');
+    var dataDiv = document.getElementById('bank-transfer-data');
+
+    function updateQr(){
+        var val = paymentSelect.value;
+        if(val === 'transfer'){
+            var bankName = dataDiv.getAttribute('data-bank-name') || '';
+            var accName = dataDiv.getAttribute('data-account-name') || '';
+            var accNo = dataDiv.getAttribute('data-account-number') || '';
+            var amount = dataDiv.getAttribute('data-amount') || '';
+            var note = dataDiv.getAttribute('data-note') || '';
+            var qrText = 'Ngân hàng: ' + bankName + '\nChủ tài khoản: ' + accName + '\nSố tài khoản: ' + accNo + '\nSố tiền: ' + amount + ' VND\n' + note;
+            var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=' + encodeURIComponent(qrText);
+            qrImg.src = qrUrl;
+            document.getElementById('bank-name').textContent = bankName;
+            document.getElementById('bank-account-name').textContent = accName;
+            document.getElementById('bank-account-number').textContent = accNo;
+            qrDiv.style.display = 'block';
+        } else {
+            qrDiv.style.display = 'none';
+            qrImg.src = '';
+        }
+    }
+
+    paymentSelect.addEventListener('change', updateQr);
+    if(paymentSelect.value === 'transfer') updateQr();
+})();
+</script>
+<script>
+(function(){
+    var form = document.getElementById('booking-form');
+    if(!form) return;
+    var quantityInput = form.querySelector('input[name="quantity"]');
+
+    function showQuantityError(msg){
+        // remove existing
+        var ex = document.getElementById('quantity-error');
+        if(ex) ex.remove();
+        var div = document.createElement('div');
+        div.id = 'quantity-error';
+        div.className = 'alert alert-danger alert-dismissible fade show mt-3';
+        div.setAttribute('role','alert');
+        var span = document.createElement('span');
+        span.textContent = msg;
+        div.appendChild(span);
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn-close';
+        btn.setAttribute('aria-label','Close');
+        btn.addEventListener('click', function(){ div.remove(); });
+        div.appendChild(btn);
+        var container = quantityInput ? (quantityInput.closest('.col-md-6') || quantityInput.parentNode) : form;
+        if(container && container.parentNode){
+            container.parentNode.insertBefore(div, container.nextSibling);
+        } else {
+            form.insertBefore(div, form.firstChild);
+        }
+    }
+
+    function clearQuantityError(){
+        var ex = document.getElementById('quantity-error');
+        if(ex) ex.remove();
+    }
+
+    var submitHandler = function(e){
+        if(form.__bookingConfirmed) return;
+        e.preventDefault();
+
+        var maxSeats = 0;
+        if(quantityInput && quantityInput.max){
+            maxSeats = parseInt(quantityInput.max, 10) || 0;
+        } else {
+            maxSeats = parseInt("{{ tour_schedule.total_slots|default:'0' }}", 10) || 0;
+        }
+
+        var requested = 0;
+        if(quantityInput){
+            requested = parseInt(quantityInput.value, 10) || 0;
+        }
+
+        if(requested > maxSeats){
+            showQuantityError('Số lượng bạn nhập vượt quá số ghế còn trống. Chỉ còn ' + maxSeats + ' chỗ.');
+            try { quantityInput.focus(); } catch(e) {}
+            return;
+        }
+
+        var msg = 'Bạn có chắc chắn muốn xác nhận đặt tour không?';
+        if(window.confirm(msg)){
+            var submitBtn = form.querySelector('button[type="submit"]');
+            if(submitBtn){
+                submitBtn.disabled = true;
+                submitBtn.classList.add('disabled');
+            }
+            form.__bookingConfirmed = true;
+            form.submit();
+        }
+    };
+
+    if(quantityInput){
+        var maxSeats = quantityInput.max ? parseInt(quantityInput.max,10) : (parseInt("{{ tour_schedule.total_slots|default:'0' }}", 10) || 0);
+        // Validate after user finishes typing (on blur), not on every keystroke.
+        quantityInput.addEventListener('blur', function(){
+            var v = parseInt(this.value,10);
+            if (isNaN(v)) v = 0;
+            if(v > maxSeats){
+                showQuantityError('Số lượng bạn nhập vượt quá số ghế còn trống. Chỉ còn ' + maxSeats + ' chỗ.');
+                return;
+            }
+            if(v < 1){
+                showQuantityError('Vui lòng nhập số lượng ít nhất 1 người.');
+                return;
+            }
+            clearQuantityError();
+        });
+    }
+
+    form.addEventListener('submit', submitHandler);
+})();
+</script>
+{% endblock content %}

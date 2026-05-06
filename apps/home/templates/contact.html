@@ -1,0 +1,197 @@
+{% extends 'share_layout.html' %}
+{% block title %}Liên Hệ - Tourify{% endblock %}
+
+{% block content %}
+<style>
+    /* Nền của toàn bộ trang liên hệ có kèm ảnh du lịch mờ */
+    .contact-section {
+        background-image: linear-gradient(rgba(244, 246, 249, 0.9), rgba(244, 246, 249, 0.9)), 
+                          url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-4.0.3&auto=format&fit=crop&w=1921&q=80');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        min-height: calc(100vh - 70px);
+        padding-top: 4rem;
+        padding-bottom: 5rem;
+    }
+
+    /* Định dạng cho thẻ chứa nội dung (Card) */
+    .contact-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    }
+
+    /* Phần bên trái: Thông tin liên hệ với ảnh nền biển/bầu trời */
+    .contact-info-bg {
+        background: linear-gradient(135deg, rgba(13, 110, 253, 0.85), rgba(0, 212, 255, 0.85)), 
+                    url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 3rem;
+        height: 100%;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        font-size: 1.1rem;
+    }
+
+    .info-icon {
+        width: 45px;
+        height: 45px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+    }
+
+    .info-icon:hover {
+        background: white;
+        color: #0d6efd;
+        transform: scale(1.1);
+    }
+
+    /* Phần bên phải: Form điền thông tin */
+    .contact-form-wrap {
+        background: #ffffff;
+        padding: 3rem;
+        height: 100%;
+    }
+
+    /* Làm đẹp các ô input của form */
+    .contact-form-wrap input, 
+    .contact-form-wrap textarea {
+        border-radius: 10px;
+        padding: 12px 15px;
+        border: 1px solid #e0e0e0;
+        background-color: #f8f9fa;
+        width: 100%;
+    }
+
+    .contact-form-wrap input:focus, 
+    .contact-form-wrap textarea:focus {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+        background-color: #fff;
+        border-color: #0d6efd;
+        outline: none;
+    }
+
+    .btn-send {
+        background-color: #0d6efd;
+        border: none;
+        border-radius: 10px;
+        padding: 12px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+    }
+
+    .btn-send:hover {
+        background-color: #0b5ed7;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+    }
+</style>
+
+<div class="contact-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="fw-bold mb-3" style="color: #2c3e50;">Khám Phá Cùng Tourify</h1>
+            <p class="text-muted fs-5 mx-auto" style="max-width: 600px;">
+                Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn lên kế hoạch cho những chuyến đi tuyệt vời nhất.
+            </p>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card contact-card">
+                    <div class="row g-0">
+                        <div class="col-md-5">
+                            <div class="contact-info-bg d-flex flex-column justify-content-between">
+                                <div>
+                                    <h3 class="fw-bold mb-4">Thông tin liên hệ</h3>
+                                    <p class="mb-5" style="color: rgba(255,255,255,0.9);">
+                                        Hãy liên hệ với Tourify để bắt đầu hành trình mơ ước của bạn. Chúng tôi sẽ phản hồi sớm nhất có thể!
+                                    </p>
+
+                                    <div class="info-item">
+                                        <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                                        <span>Thành phố Hồ Chí Minh, Việt Nam</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
+                                        <span>+84 123 456 999</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-icon"><i class="fas fa-envelope"></i></div>
+                                        <span>support@tourify.com</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-5">
+                                    <h6 class="mb-3">Theo dõi chúng tôi</h6>
+                                    <div class="d-flex gap-3">
+                                        <a href="#" class="text-white fs-4"><i class="fab fa-facebook"></i></a>
+                                        <a href="#" class="text-white fs-4"><i class="fab fa-instagram"></i></a>
+                                        <a href="#" class="text-white fs-4"><i class="fab fa-twitter"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-7">
+                            <div class="contact-form-wrap">
+                                <h4 class="fw-bold mb-4" style="color: #2c3e50;">Gửi lời nhắn <i class="fas fa-paper-plane text-primary ms-2"></i></h4>
+                                
+                                <form method="post">
+                                    {% csrf_token %}
+                                    
+                                    {% if messages %}
+                                        {% for m in messages %}
+                                            <div class="alert {% if m.tags %}alert-{{ m.tags }}{% else %}alert-info{% endif %} rounded-3">{{ m }}</div>
+                                        {% endfor %}
+                                    {% endif %}
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label text-muted small fw-bold">Tên của bạn</label>
+                                            {{ form.name }}
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label text-muted small fw-bold">Địa chỉ Email</label>
+                                            {{ form.email }}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted small fw-bold">Tiêu đề (Tùy chọn)</label>
+                                        {{ form.subject }}
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label class="form-label text-muted small fw-bold">Nội dung tin nhắn</label>
+                                        {{ form.message }}
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-send text-white w-100">
+                                        Gửi Yêu Cầu Khám Phá <i class="fas fa-arrow-right ms-2"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,32 @@
+{% extends 'share_layout.html' %} {% block title %}Home{% endblock %} 
+{% load static %} 
+{% block content %}
+{% if not tours %}
+  <div class="alert alert-info text-center" role="alert">
+    No tours available.
+  </div>
+{% endif %}
+<div class="container mt-5">
+  <h1 class="mb-4">Các tour du lịch có sẵn</h1>
+  <div class="row">
+    {% for tour in tours %}
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
+        <img
+          src="{{ tour.thumbnail.url }}"
+          class="card-img-top"
+          alt="{{ tour.title }}"
+        />
+        <div class="card-body">
+          <h5 class="card-title">{{ tour.title }}</h5>
+          <div class="card-text">{{ tour.description|striptags|truncatewords:20 }}</div>
+          <a href="{% url 'tour_detail' tour.id %}" class="btn btn-primary"
+            >Xem chi tiết</a
+          >
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock content %}

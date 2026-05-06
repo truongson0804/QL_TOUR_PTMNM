@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% load static %}
+    <link
+      rel="stylesheet"
+      href="{% static 'bootstrap/css/bootstrap.min.css' %}"
+    />
+    <link rel="stylesheet" href="{% static 'leaflet/leaflet.css' %}" />
+    <link rel="stylesheet" href="{% static 'bootstrap/css/responsive.css' %}" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      body > main {
+        flex: 1;
+      }
+      .leaflet-popup-content img,
+      .leaflet-popup-content-wrapper img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+      .leaflet-popup-content {
+        word-wrap: break-word;
+      }
+    </style>
+
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'leaflet/leaflet.js' %}"></script>
+
+    {% block extra_css %}{% endblock %}
+
+    <title>{% block title %}Tourify{% endblock %}</title>
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container">
+          <!-- Logo -->
+          <a class="navbar-brand fw-bold text-white" href="{% url 'home' %}">
+            Tourify
+          </a>
+
+          <!-- Mobile toggle -->
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNavbar"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <!-- Navbar content -->
+          <div class="collapse navbar-collapse" id="mainNavbar">
+            <!-- Left menu -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            
+              
+              <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'show_map' %}">Map</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'about' %}">Giới Thiệu</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'contact' %}">Liên Hệ</a>
+              </li>
+            </ul>
+
+            <!-- Right actions -->
+            <div class="d-flex align-items-center gap-2">
+              {% if user.is_authenticated %}
+                {% if user.is_staff or user.is_superuser %}
+                <div class="dropdown me-3">
+                  <a class="text-white text-decoration-none dropdown-toggle fw-bold d-flex align-items-center" 
+                     href="#" 
+                     role="button" 
+                     data-bs-toggle="dropdown" 
+                     aria-expanded="false"
+                     onmouseover="this.style.textDecoration='underline'" 
+                     onmouseout="this.style.textDecoration='none'">
+                    Quản trị
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="/admin-panel/">Admin Panel</a></li>
+                    <li><a class="dropdown-item" href="/admin/">Django Admin</a></li>
+                  </ul>
+                </div>
+                {% endif %}
+                <span class="text-white d-flex align-items-center">Welcome, <strong><a href="{% url 'user_profile' user.username %}" class="text-white text-decoration-none">{{ user.username }}</a></strong></span>
+                <a href="{% url 'logout' %}" class="btn btn-outline-light ms-3">Logout</a>
+              
+              {% else %}
+                
+                <a href="{% url 'login' %}" class="btn btn-outline-light">Login</a>
+                <a href="{% url 'register' %}" class="btn btn-light">Sign Up</a>
+              
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div>{% block search %} {% endblock %}</div>
+      <div>{% block content %} {% endblock %}</div>
+    </main>
+
+    <footer class="bg-primary text-white text-center py-3 mt-5">
+      <div class="container">
+        <p class="mb-0">&copy; 2026 Tourify. All rights reserved.</p>
+        <p class="mb-0">
+          Follow us on
+          <a href="#" class="text-white text-decoration-underline">Facebook</a>,
+          <a href="#" class="text-white text-decoration-underline">Twitter</a>,
+          and
+          <a href="#" class="text-white text-decoration-underline">Instagram</a
+          >.
+        </p>
+      </div>
+    </footer>
+    <script src="{% static 'js/nonnegative-inputs.js' %}"></script>
+    {% block extra_js %}{% endblock extra_js %}
+  </body>
+</html>
