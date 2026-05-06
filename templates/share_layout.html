@@ -8,7 +8,9 @@
       rel="stylesheet"
       href="{% static 'bootstrap/css/bootstrap.min.css' %}"
     />
+    {% block leaflet_css %}
     <link rel="stylesheet" href="{% static 'leaflet/leaflet.css' %}" />
+    {% endblock leaflet_css %}
     <link rel="stylesheet" href="{% static 'bootstrap/css/responsive.css' %}" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -32,7 +34,9 @@
     </style>
 
     <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    {% block leaflet_js %}
     <script src="{% static 'leaflet/leaflet.js' %}"></script>
+    {% endblock leaflet_js %}
 
     {% block extra_css %}{% endblock %}
 

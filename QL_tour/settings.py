@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     'apps.tours',
     'apps.bookings',
     'apps.payments',
-    'apps.gis_tool',
     'apps.admin_panel',
 ]
 

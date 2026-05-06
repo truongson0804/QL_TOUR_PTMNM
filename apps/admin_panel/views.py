@@ -31,14 +31,11 @@ import os
 from apps.bookings.models import Booking
 from apps.payments.models import Payment, Status as PaymentStatus, Methods as PaymentMethods
 from apps.users.models import User
-from apps.tours.forms import TourStopAdminForm
 from apps.tours.models.categories import Category
 from apps.tours.models.continent import Continent
 from apps.tours.models.country import Country
 from apps.tours.models.tours import Tour
 from apps.tours.models.tour_schedules import TourSchedule
-from apps.tours.models.tour_stop import TourStop
-from apps.tours.models.route_stop import RouteStop
 from apps.tours.models.tour_image import TourImage
 from apps.home.models import ContactMessage
 
@@ -177,21 +174,7 @@ def get_model_configs() -> list[ModelConfig]:
             search_fields=["tour__title"],
             form_class=TourScheduleAdminForm,
         ),
-        ModelConfig(
-            key="tour_stops",
-            model=TourStop,
-            label="Điểm dừng",
-            list_display=["id", "name", "description", "latitude", "longitude"],
-            search_fields=["name", "description"],
-            form_class=TourStopAdminForm,
-        ),
-        ModelConfig(
-            key="route_stops",
-            model=RouteStop,
-            label="Điểm tuyến",
-            list_display=["id", "tour.title", "stop.name", "order", "stay_minutes"],
-            search_fields=["tour__title", "stop__name"],
-        ),
+        # Note: TourStop and RouteStop models removed; admin panels disabled.
         ModelConfig(
             key="users",
             model=User,

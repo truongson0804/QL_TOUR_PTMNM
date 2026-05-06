@@ -1,39 +1,17 @@
-{% extends 'share_layout.html' %} {% load static price_filters %} {% block content %}
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"
-/>
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css"
-/>
+{% extends 'share_layout.html' %} {% load static price_filters %}
+
+{% block leaflet_css %}{% endblock leaflet_css %}
+{% block leaflet_js %}{% endblock leaflet_js %}
+
+{% block content %}
+<!-- Leaflet removed -->
 
 <style>
   body {
     background-color: #f8f9fa;
   }
 
-  /* Custom popup styling */
-  .custom-popup .leaflet-popup-content-wrapper {
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-    /* outer white border to separate popup from map */
-    border: 6px solid #ffffff;
-    padding: 8px; /* inner spacing so content doesn't touch white border */
-    background-clip: padding-box;
-  }
-
-  .custom-popup .leaflet-popup-tip {
-    background: #ffffff;
-    /* match outer white border for the tip */
-    border: 6px solid #ffffff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  }
-
-  .custom-popup .leaflet-popup-content {
-    margin: 0;
-  }
+  /* Leaflet-specific popup styles removed (Leaflet disabled on this page). */
 
   /* Marker animation */
   .custom-marker {
@@ -236,7 +214,29 @@
           <i class="fas fa-route text-primary me-2"></i>Các điểm đến
         </h4>
         <div class="flex-grow-1 position-relative">
-          <div id="map"></div>
+          {% if stops %}
+            <div class="list-group list-group-flush">
+              {% for stop in stops %}
+                <div class="list-group-item d-flex gap-3 align-items-start">
+                  <img
+                    src="{% if stop.image %}{{ stop.image.url }}{% else %}{% static 'images/placeholder-tour.svg' %}{% endif %}"
+                    alt="{{ stop.name|default:'Điểm đến' }}"
+                    class="rounded-3"
+                    style="width:84px;height:84px;object-fit:cover;"
+                  />
+                  <div class="flex-grow-1">
+                    <h5 class="mb-1">{{ stop.name|default:stop.title|default:'Điểm dừng' }}</h5>
+                    <p class="mb-1 text-muted small">{{ stop.description|default:''|truncatechars:140 }}</p>
+                    {% if stop.order %}
+                      <small class="text-muted">Thứ tự: {{ stop.order }}</small>
+                    {% endif %}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="p-4 text-center text-muted">Chưa có điểm đến được cấu hình cho tour này.</div>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -307,8 +307,7 @@
   </div>
 </div>
 
-<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
+<!-- Leaflet scripts removed -->
 <!-- Gallery modal (Bootstrap) -->
 <div class="modal fade" id="galleryModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -371,5 +370,5 @@
     </div>
   </div>
 </div>
-<script src="{% static 'js/map.js' %}"></script>
+<!-- map.js removed; Leaflet disabled -->
 {% endblock %}

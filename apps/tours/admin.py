@@ -1,14 +1,9 @@
 from django.contrib import admin
-from django.contrib.gis.geos import Point
-
-from .forms import TourStopAdminForm
 
 from .models.categories import Category
 from .models.continent import Continent
 from .models.country import Country
-from .models.route_stop import RouteStop
 from .models.tour_schedules import TourSchedule
-from .models.tour_stop import TourStop
 from .models.tours import Tour
 
 
@@ -58,8 +53,4 @@ class ContinentsAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'code')
     search_fields = ('name', 'code')
     ordering = ('name',)
-@admin.register(RouteStop)
-class RoutesStopAdmin(admin.ModelAdmin):
-    list_display = ('id', 'tour', 'stop', 'order', 'stay_minutes')
-    search_fields = ('tour__title', 'stop__name')
-    ordering = ('tour', 'order')
+# RouteStop and TourStop models removed; corresponding admin registration removed.

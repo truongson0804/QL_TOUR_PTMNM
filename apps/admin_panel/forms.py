@@ -3,8 +3,6 @@ from django.contrib.auth import get_user_model
 
 from apps.tours.models.tours import Tour
 from apps.tours.models.tour_schedules import TourSchedule
-from apps.tours.models.tour_stop import TourStop
-from apps.tours.models.route_stop import RouteStop
 from datetime import datetime, time
 
 User = get_user_model()

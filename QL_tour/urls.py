@@ -31,7 +31,6 @@ urlpatterns = [
     path('auth/', include('apps.users.urls')),
     path('', include('apps.home.urls')),
     path('tours/', include('apps.tours.urls')),
-    path('gis/', include('apps.gis_tool.urls')),
     path('bookings/', include('apps.bookings.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

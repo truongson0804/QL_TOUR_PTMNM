@@ -5,15 +5,9 @@ class Command(BaseCommand):
     help = 'Heuristically assign RouteStop.tour for RouteStop rows where tour is null'
 
     def handle(self, *args, **options):
-        from apps.tours.models.route_stop import RouteStop
-        from apps.tours.models.tours import Tour
-
-        route_stops = RouteStop.objects.select_related('stop').filter(tour__isnull=True)
-        tours = list(Tour.objects.all())
-
-        if not route_stops.exists():
-            self.stdout.write(self.style.SUCCESS('No unassigned RouteStop rows found.'))
-            return
+        # RouteStop model removed; this management command is disabled.
+        self.stdout.write(self.style.WARNING('RouteStop model removed; command disabled.'))
+        return
 
         def score_match(tour, stop_name):
             t = (tour.title or '').lower()
