@@ -950,12 +950,21 @@ class AdminModelImportView(StaffRequiredMixin, View):
     def get(self, request: HttpRequest, model_key: str) -> HttpResponse:
         config = get_model_config(model_key)
         self.require_perm(request, config.model, "add")
+        # Disable Excel import for Tours (key 'tours')
+        if config.key == 'tours':
+            messages.error(request, "Chức năng nhập Excel cho Tour đã bị vô hiệu hóa.")
+            return redirect(reverse('admin_panel:model_list', args=[config.key]))
         form = ExcelUploadForm()
         return render(request, self.template_name, {"menu": get_model_configs(), "current_key": config.key, "config": config, "form": form})
 
     def post(self, request: HttpRequest, model_key: str) -> HttpResponse:
         config = get_model_config(model_key)
         self.require_perm(request, config.model, "add")
+
+        # Disable Excel import for Tours (key 'tours')
+        if config.key == 'tours':
+            messages.error(request, "Chức năng nhập Excel cho Tour đã bị vô hiệu hóa.")
+            return redirect(reverse('admin_panel:model_list', args=[config.key]))
 
         form = ExcelUploadForm(request.POST, request.FILES)
         if not form.is_valid():
