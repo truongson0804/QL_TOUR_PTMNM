@@ -21,6 +21,12 @@
         min-height: 100vh;
         display: flex;
         flex-direction: column;
+        padding-top: 70px; /* space for fixed navbar */
+      }
+      @media (max-width: 576px) {
+        body {
+          padding-top: 110px; /* mobile: navbar taller with toggler */
+        }
       }
       body > main {
         flex: 1;
@@ -45,7 +51,7 @@
   </head>
   <body>
     <header>
-      <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm fixed-top">
         <div class="container">
           <!-- Logo -->
           <a class="navbar-brand fw-bold text-white" href="{% url 'home' %}">
