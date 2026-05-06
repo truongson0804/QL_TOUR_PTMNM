@@ -1,295 +1,349 @@
-{% extends 'share_layout.html' %} {% load static price_filters %}
+{% extends 'share_layout.html' %} 
+{% load static price_filters %}
 
 {% block leaflet_css %}{% endblock leaflet_css %}
 {% block leaflet_js %}{% endblock leaflet_js %}
 
 {% block content %}
-<!-- Leaflet removed -->
-
 <style>
+  :root {
+    /* Lấy mã màu xanh từ hình ảnh cung cấp */
+    --primary-blue: #0d6efd; /* Xanh dương đậm chủ đạo (giống màu nút Gửi Yêu Cầu) */
+    --gradient-blue: linear-gradient(135deg, #2b8aef 0%, #0cd2ee 100%); /* Gradient xanh lam - lục lam (giống panel Thông tin liên hệ) */
+    --text-dark: #333333;
+    --border-color: #dee2e6;
+  }
+
   body {
-    background-color: #f8f9fa;
+    background-color: #ffffff;
+    color: var(--text-dark);
   }
 
-  /* Leaflet-specific popup styles removed (Leaflet disabled on this page). */
-
-  /* Marker animation */
-  .custom-marker {
-    transition: filter 0.3s ease;
-    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
-  }
-
-  .detail-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center center;
-    border-radius: 1rem;
-    display: block;
-  }
-
-  .info-list {
-    padding-left: 0;
-    list-style: none;
-  }
-
-  .info-list li {
-    margin-bottom: 1rem;
-    font-size: 1.05rem;
-    display: flex;
-    align-items: center;
-  }
-
-  .info-icon {
-    width: 35px;
-    height: 35px;
-    background-color: rgba(13, 110, 253, 0.1);
-    color: #0d6efd;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 12px;
-    font-size: 0.9rem;
-  }
-
-  /* Tối ưu khung bản đồ để không bị tràn viền bo góc */
-  #map {
-    height: 100%;
-    min-height: 450px; /* Tăng chiều cao để bảng Routing Machine hiển thị đẹp hơn */
-    border-radius: 1rem;
-    z-index: 1;
-    border: 1px solid #e2e8f0;
-  }
-
-  /* Style lại bảng lịch trình */
-  .table-custom th {
-    background-color: #f1f5f9;
-    color: #475569;
-    font-weight: 600;
+  /* Main Title */
+  .tour-main-title {
+    font-size: 1.5rem;
+    font-weight: 700;
     text-transform: uppercase;
-    font-size: 0.85rem;
-    padding: 1rem;
-    border-bottom: none;
-  }
-  .table-custom td {
-    vertical-align: middle;
-    padding: 1rem;
-    border-bottom: 1px solid #e2e8f0;
-  }
-  .table-custom tr:last-child td {
-    border-bottom: none;
+    color: var(--text-dark);
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
   }
 
-  /* Image wrapper to control visible size and responsivity */
-  .image-wrap {
+  /* Image Slider */
+  .main-image-wrap {
     width: 100%;
-    height: 100%;
-    min-height: 320px;
+    border-radius: 0;
     overflow: hidden;
-    border-radius: 1rem;
     position: relative;
+    margin-bottom: 1.5rem;
+  }
+  .main-image-wrap img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    max-height: 450px;
   }
 
-  @media (min-width: 768px) {
-    .image-wrap {
-      min-height: 420px;
-    }
+  /* Headings with Icon */
+  .section-heading {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+  }
+  .section-heading i {
+    margin-right: 8px;
+    font-size: 1.2rem;
   }
 
-  @media (min-width: 1200px) {
-    .image-wrap {
-      min-height: 420px;
-    }
+  /* Right Sidebar - Info Box */
+  .sidebar-info-box {
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    border-top: 3px solid var(--primary-blue); /* Thêm viền trên màu xanh tạo điểm nhấn */
+  }
+  .sidebar-info-box .info-row {
+    display: flex;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px dashed #eee;
+    padding-bottom: 0.75rem;
+  }
+  .sidebar-info-box .info-row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .sidebar-info-box .info-label {
+    width: 35%;
+    font-weight: 600;
+    color: #555;
+  }
+  .sidebar-info-box .info-value {
+    width: 65%;
   }
 
-  /* Detail card styling */
-  .detail-card {
-    position: relative;
-    overflow: visible;
+  /* Right Sidebar - Price Box */
+  .price-box {
+    background: var(--gradient-blue); /* Sử dụng gradient xanh cho khối giá */
+    color: white;
+    padding: 1rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+  }
+  .price-box span {
+    font-size: 1.5rem;
+    margin-left: 10px;
+  }
+
+  /* Right Sidebar - Action Box */
+  .action-box {
+    border: 1px solid var(--border-color);
+    border-top: none;
+    padding: 1rem;
+    background-color: #fcfcfc;
+  }
+
+  /* Right Sidebar - Navigation Menu */
+  .sidebar-menu {
+    border: 1px solid var(--border-color);
+    margin-top: 1rem;
+    list-style: none;
+    padding-left: 0;
+    background: #f9f9f9;
+  }
+  .sidebar-menu li {
+    border-bottom: 1px solid var(--border-color);
+  }
+  .sidebar-menu li a {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    color: var(--text-dark);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  .sidebar-menu li a i {
+    width: 25px;
+    color: var(--primary-blue);
+  }
+  .sidebar-menu li a:hover {
+    background-color: #eef5ff;
+    color: var(--primary-blue);
+  }
+
+  /* Left Content - Tables */
+  .table-schedule {
+    font-size: 0.9rem;
+    border-top: 2px solid var(--primary-blue);
+  }
+  .table-schedule th {
+    background-color: #f8f9fa;
+    color: var(--text-dark);
+    font-weight: 600;
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .table-schedule td {
+    vertical-align: middle;
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .btn-book-sm {
+    background-color: var(--primary-blue);
+    color: white;
+    font-size: 0.8rem;
+    padding: 6px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+  }
+  .btn-book-sm:hover {
+    background-color: #0a58ca;
+    color: white;
+  }
+
+  /* Descriptions */
+  .tour-description {
+    line-height: 1.6;
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
   }
 </style>
 
+<div class="container py-4">
+  <!-- Top Title -->
+  <h1 class="tour-main-title">
+    {{ tour.title }}
+  </h1>
 
-<div class="container py-5">
-  <div class="row g-4 mb-5">
-    <!-- Left Column: Image -->
-    <div class="col-lg-6">
-      <div class="card detail-card border-0 shadow-sm rounded-4 p-4 h-100">
-        <div class="image-wrap position-relative">
-          <img
-            src="{% if images and images|length > 0 %}{{ images.0.image.url }}{% elif tour.thumbnail %}{{ tour.thumbnail.url }}{% else %}{% static 'images/placeholder-tour.svg' %}{% endif %}"
-            alt="{{ tour.title }}"
-            class="detail-img shadow-sm"
-            style="cursor: pointer; width: 100%; height: 100%"
-            data-bs-toggle="modal"
-            data-bs-target="#galleryModal"
-          />
-          {% if images|length > 1 %}
-          <span
-            class="position-absolute top-0 start-0 badge bg-dark bg-opacity-75 text-white m-3"
-            >+{{ images|length }}</span
-          >
-          {% endif %}
+  <div class="row g-4">
+    <!-- LEFT COLUMN (Image & Details) -->
+    <div class="col-lg-8">
+      
+      <!-- Main Image -->
+      <div class="main-image-wrap shadow-sm">
+        <img
+          src="{% if images and images|length > 0 %}{{ images.0.image.url }}{% elif tour.thumbnail %}{{ tour.thumbnail.url }}{% else %}{% static 'images/placeholder-tour.svg' %}{% endif %}"
+          alt="{{ tour.title }}"
+          data-bs-toggle="modal"
+          data-bs-target="#galleryModal"
+          style="cursor: pointer;"
+        />
+      </div>
+
+      <!-- Description Section -->
+      <h3 class="section-heading mt-4">
+        <i class="fas fa-map-marker-alt"></i> Điểm nhấn hành trình
+      </h3>
+      <div class="tour-description border-bottom pb-3">
+        {{ tour.description|safe }}
+      </div>
+
+      <!-- Schedule Table Section -->
+      <h3 class="section-heading mt-4">
+        <i class="far fa-calendar-alt"></i> Ngày khởi hành khác
+      </h3>
+      <div class="table-responsive mb-5">
+        <table class="table table-schedule align-middle">
+          <thead>
+            <tr>
+              <th class="text-center">STT</th>
+              <th>Ngày khởi hành</th>
+              <th>Ngày về</th>
+              <th class="text-center">Số chỗ</th>
+              <th>Giá từ</th>
+              <th class="text-center">Xác nhận</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for schedule in schedules %}
+            <tr>
+              <td class="text-center text-muted fw-bold">{{ forloop.counter }}</td>
+              <td class="fw-medium">{{ schedule.start_day }}</td>
+              <td class="fw-medium">{{ schedule.end_day }}</td>
+              <td class="text-center">
+                {% if schedule.total_slots > 0 %}
+                  <span style="color: var(--primary-blue); font-weight: 500;">Còn {{ schedule.total_slots }} chỗ</span>
+                {% else %}
+                  <span class="text-danger">Hết chỗ</span>
+                {% endif %}
+              </td>
+              <td class="fw-bold" style="color: var(--primary-blue);">{{ tour.price|currency_vnd }}</td>
+              <td class="text-center">
+                {% if schedule.total_slots > 0 %}
+                  <a href="{% url 'booking_confirm' schedule.id %}" class="btn-book-sm">Book</a>
+                {% else %}
+                  <button class="btn btn-secondary btn-sm" disabled>Đã đầy</button>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center py-4 text-muted">
+                Hiện chưa có lịch trình nào cho tour này.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN (Sidebar Info) -->
+    <div class="col-lg-4">
+      
+      <!-- Tour Summary Info Box -->
+      <div class="sidebar-info-box">
+        <h4 class="text-uppercase text-center fw-bold mb-3" style="font-size: 1rem; color: var(--primary-blue);">
+          {{ tour.title }}
+        </h4>
+        <div class="info-row">
+          <div class="info-label">Mã tour:</div>
+          <div class="info-value">T-{{ tour.id|default:"Đang cập nhật" }}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Thời gian:</div>
+          <div class="info-value">{{ tour.duration_days|default:"Đang cập nhật" }}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Danh mục:</div>
+          <div class="info-value">{{ tour.category }}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Phương tiện:</div>
+          <div class="info-value">Máy bay, Xe du lịch </div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Xuất phát:</div>
+          <div class="info-value">Hồ Chí Minh </div>
         </div>
       </div>
-    </div>
 
-    <!-- Right Column: Tour Info -->
-    <div class="col-lg-6">
-      <!-- Tour Information Card -->
-      <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
-        <h2
-          class="fw-bold mb-4"
-          style="text-transform: capitalize; color: #1e293b"
-        >
-          {{ tour.title }}
-        </h2>
-
-        <ul class="info-list mb-0">
-          <li>
-            <div class="info-icon">
-              <i class="fas fa-money-bill-wave"></i>
-            </div>
-            <div>
-              <small class="text-muted d-block" style="font-size: 0.8rem"
-                >Giá</small
-              ><strong class="text-danger fs-5"
-                >{{ tour.price|currency_vnd }}</strong
-              >
-            </div>
-          </li>
-          <li>
-            <div class="info-icon"><i class="fas fa-th-large"></i></div>
-            <div>
-              <small class="text-muted d-block" style="font-size: 0.8rem"
-                >Danh mục</small
-              ><span class="fw-medium">{{ tour.category }}</span>
-            </div>
-          </li>
-          <li>
-            <div class="info-icon">
-              <i class="fas fa-map-marker-alt"></i>
-            </div>
-            <div>
-              <small class="text-muted d-block" style="font-size: 0.8rem"
-                >Quốc gia</small
-              ><span class="fw-medium">{{ tour.country }}</span>
-            </div>
-          </li>
-          <li>
-            <div class="info-icon"><i class="far fa-clock"></i></div>
-            <div>
-              <small class="text-muted d-block" style="font-size: 0.8rem"
-                >Số ngày</small
-              ><span class="fw-medium"
-                >{{ tour.duration_days|default:"Chưa có thông tin" }}</span
-              >
-            </div>
-          </li>
-          <li>
-            <div class="info-icon"><i class="fas fa-users"></i></div>
-            <div>
-              <small class="text-muted d-block" style="font-size: 0.8rem"
-                >Số người</small
-              ><span class="fw-medium">{{ tour.max_people }} người</span>
-            </div>
-          </li>
-        </ul>
+      <!-- Price Box -->
+      <div class="price-box">
+        Giá từ: <span>{{ tour.price|currency_vnd }}</span>
       </div>
-    </div>
-  </div>
 
-  <!-- Description Section -->
-  <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mb-5">
-    <h3 class="fw-bold mb-4 border-bottom pb-3">
-      <i class="fas fa-align-left text-primary me-2"></i>Mô tả chi tiết
-    </h3>
-    <div class="text-muted lh-base">
-      {{ tour.description|safe }}
-    </div>
-  </div>
-
-  <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5">
-    <h3 class="fw-bold mb-4 border-bottom pb-3">
-      <i class="far fa-calendar-alt text-primary me-2"></i>Lịch trình chi tiết
-    </h3>
-
-    <div class="table-responsive">
-      <table class="table table-custom table-hover align-middle mb-0">
-        <thead>
-          <tr>
-            <th class="text-center rounded-start">STT</th>
-            <th>Ngày bắt đầu</th>
-            <th>Ngày kết thúc</th>
-            <th class="text-center">Số lượng (chỗ)</th>
-            <th>Giá</th>
-            <th class="text-center rounded-end">Thao tác</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for schedule in schedules %}
-          <tr>
-            <td class="text-center text-muted fw-bold">
-              {{ forloop.counter }}
-            </td>
-            <td class="fw-medium">{{ schedule.start_day }}</td>
-            <td class="fw-medium">{{ schedule.end_day }}</td>
-            <td class="text-center">
-              <span
-                class="badge {% if schedule.total_slots > 0 %}bg-success bg-opacity-10 text-success{% else %}bg-danger bg-opacity-10 text-danger{% endif %} px-3 py-2 rounded-pill fs-6"
-              >
-                {{ schedule.total_slots }}
-              </span>
-            </td>
-            <td class="text-danger fw-bold">{{ tour.price|currency_vnd }}</td>
-            <td class="text-center">
+      <!-- Action Box (Booking form simulation) -->
+      <div class="action-box">
+        <div class="mb-0">
+          <label class="form-label text-muted small">Chọn ngày khởi hành (Nếu có)</label>
+          <select class="form-select border-secondary">
+            <option selected>-- Chọn ngày --</option>
+            {% for schedule in schedules %}
               {% if schedule.total_slots > 0 %}
-              <a
-                href="{% url 'booking_confirm' schedule.id %}"
-                class="btn btn-primary rounded-pill fw-bold px-4"
-              >
-                ĐẶT CHUYẾN
-              </a>
-              {% else %}
-              <button class="btn btn-secondary rounded-pill px-4" disabled>
-                Hết chỗ
-              </button>
+                <option value="{{ schedule.id }}">{{ schedule.start_day }}</option>
               {% endif %}
-            </td>
-          </tr>
-          {% empty %}
-          <tr>
-            <td colspan="6" class="text-center py-4 text-muted">
-              Hiện chưa có lịch trình nào cho tour này.
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <!-- Quick Nav Menu Sidebar -->
+      <ul class="sidebar-menu">
+        <li>
+          <a href="#"><i class="fas fa-map-marker-alt"></i> Điểm nhấn hành trình</a>
+        </li>
+        <li>
+          <a href="#"><i class="far fa-calendar-alt"></i> Lịch trình</a>
+        </li>
+        <li>
+          <a href="#"><i class="fas fa-check-circle"></i> Dịch vụ bao gồm và không bao gồm</a>
+        </li>
+        <li>
+          <a href="#"><i class="fas fa-clipboard-list"></i> Ghi chú</a>
+        </li>
+        <li>
+          <a href="#"><i class="far fa-calendar-plus"></i> Ngày khởi hành khác</a>
+        </li>
+      </ul>
+
     </div>
   </div>
 </div>
 
-<!-- Leaflet scripts removed -->
 <!-- Gallery modal (Bootstrap) -->
 <div class="modal fade" id="galleryModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content bg-transparent border-0">
       <div class="modal-body p-0">
-        <div
-          id="galleryCarousel"
-          class="carousel slide"
-          data-bs-ride="carousel"
-        >
+        <div id="galleryCarousel" class="carousel slide" data-bs-ride="carousel">
           <div class="carousel-inner">
             {% for img in images %}
             <div class="carousel-item {% if forloop.first %}active{% endif %}">
-              <img
-                src="{{ img.image.url }}"
-                class="d-block w-100"
-                alt="{{ img.caption }}"
-              />
+              <img src="{{ img.image.url }}" class="d-block w-100" alt="{{ img.caption }}" />
               {% if img.caption %}
               <div class="carousel-caption d-none d-md-block">
                 <p>{{ img.caption }}</p>
@@ -298,41 +352,25 @@
             </div>
             {% empty %}
             <div class="carousel-item active">
-              <img
-                src="{% if tour.thumbnail %}{{ tour.thumbnail.url }}{% else %}{% static 'images/placeholder-tour.svg' %}{% endif %}"
-                class="d-block w-100"
-                alt="{{ tour.title }}"
-              />
+              <img src="{% if tour.thumbnail %}{{ tour.thumbnail.url }}{% else %}{% static 'images/placeholder-tour.svg' %}{% endif %}" class="d-block w-100" alt="{{ tour.title }}" />
             </div>
             {% endfor %}
           </div>
-          <button
-            class="carousel-control-prev"
-            type="button"
-            data-bs-target="#galleryCarousel"
-            data-bs-slide="prev"
-          >
+          <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
           </button>
-          <button
-            class="carousel-control-next"
-            type="button"
-            data-bs-target="#galleryCarousel"
-            data-bs-slide="next"
-          >
+          <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
           </button>
         </div>
       </div>
       <div class="modal-footer border-0 justify-content-center">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Close
-        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
-<!-- map.js removed; Leaflet disabled -->
+
 {% endblock %}
