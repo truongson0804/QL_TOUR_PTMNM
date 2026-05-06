@@ -186,9 +186,6 @@
             <i class="fas fa-plus-circle me-1"></i> Thêm {{ config.label }} mới
         </a>
         {% if config.key == 'tours' %}
-            <a class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-bold ms-2" href="{% url 'admin_panel:model_import' model_key=config.key %}">
-                <i class="fas fa-file-import me-1"></i> Nhập Excel
-            </a>
             <a class="btn btn-outline-success rounded-pill px-4 py-2 fw-bold ms-2" href="?q={{ q }}&export=xlsx" title="Xuất Excel (XLSX)">
                 <i class="fas fa-file-excel me-1"></i> Xuất Excel
             </a>
