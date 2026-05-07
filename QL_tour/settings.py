@@ -160,13 +160,3 @@ if EMAIL_BACKEND == 'django.core.mail.backends.smtp.EmailBackend':
     EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'False').lower() in ('true', '1', 'yes')
     SERVER_EMAIL = os.environ.get('SERVER_EMAIL', EMAIL_HOST_USER)
 
-# Optional: Mailtrap configuration for testing (e.g. route forgot-password emails)
-# To enable, set `FORGOT_PASSWORD_USE_MAILTRAP` to 'True' in your .env and provide
-# `MAILTRAP_HOST`, `MAILTRAP_PORT`, `MAILTRAP_USER`, `MAILTRAP_PASSWORD`.
-# Defaults below assume Mailtrap service; leave credentials empty if unused.
-FORGOT_PASSWORD_USE_MAILTRAP = os.environ.get('FORGOT_PASSWORD_USE_MAILTRAP', 'False').lower() in ('true', '1', 'yes')
-MAILTRAP_HOST = os.environ.get('MAILTRAP_HOST', 'smtp.mailtrap.io')
-MAILTRAP_PORT = int(os.environ.get('MAILTRAP_PORT', 2525) or 2525)
-MAILTRAP_USER = os.environ.get('MAILTRAP_USER', '')
-MAILTRAP_PASSWORD = os.environ.get('MAILTRAP_PASSWORD', '')
-MAILTRAP_USE_TLS = os.environ.get('MAILTRAP_USE_TLS', 'False').lower() in ('true', '1', 'yes')
