@@ -37,7 +37,6 @@ from apps.tours.models.country import Country
 from apps.tours.models.tours import Tour
 from apps.tours.models.tour_schedules import TourSchedule
 from apps.tours.models.tour_image import TourImage
-from apps.home.models import ContactMessage
 
 from .forms import (
     TourScheduleAdminForm,
@@ -222,13 +221,6 @@ def get_model_configs() -> list[ModelConfig]:
             label="Doanh thu",
             list_display=["id", "tour_schedule.tour.title", "total_people", "total_price", "payment_method", "create_at"],
             search_fields=["tour_schedule__tour__title", "user__username"],
-        ),
-        ModelConfig(
-            key="contacts",
-            model=ContactMessage,
-            label="Tin nhắn liên hệ",
-            list_display=["id", "name", "email", "subject", "status", "created_at"],
-            search_fields=["name", "email", "subject", "message"],
         ),
     ]
 
