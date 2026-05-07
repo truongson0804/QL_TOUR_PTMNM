@@ -1,4 +1,5 @@
 apps/home/templates/home.html
+apps/home/templates/contact.html
 apps/tours/templates/index.html
 apps/bookings/templates/booking.html
 apps/tours/templates/detail.html

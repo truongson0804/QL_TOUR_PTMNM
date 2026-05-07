@@ -1,13 +1,10 @@
 from typing import Any
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.views.generic import TemplateView
-from django.contrib import messages
 from ..tours.models.categories import Category
 from ..tours.models.continent import Continent
 from ..tours.models.country import Country
 from apps.tours.models.tours import Tour
-from .forms import ContactForm
-from .models import ContactMessage
 
 
 class Home(TemplateView):
@@ -40,14 +37,4 @@ class Contact(TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['form'] = ContactForm()
         return context
-
-    def post(self, request, *args, **kwargs):
-        form = ContactForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Tin nhắn đã được gửi. Cảm ơn bạn!')
-            return redirect('contact')
-        messages.error(request, 'Có lỗi trong form. Vui lòng kiểm tra lại.')
-        return render(request, self.template_name, {'form': form})

@@ -144,17 +144,80 @@
       <div>{% block content %} {% endblock %}</div>
     </main>
 
-    <footer class="bg-primary text-white text-center py-3 mt-5">
+    <footer class="bg-primary text-white py-5 mt-5">
       <div class="container">
-        <p class="mb-0">&copy; 2026 Tourify. All rights reserved.</p>
-        <p class="mb-0">
-          Follow us on
-          <a href="#" class="text-white text-decoration-underline">Facebook</a>,
-          <a href="#" class="text-white text-decoration-underline">Twitter</a>,
-          and
-          <a href="#" class="text-white text-decoration-underline">Instagram</a
-          >.
-        </p>
+        <div class="row mb-4">
+          <!-- Company Info -->
+          <div class="col-md-3 col-sm-6 mb-4">
+            <h5 class="fw-bold mb-3">Tourify</h5>
+            <p class="small text-white-50">
+              Khám phá những điểm đến tuyệt vời trên thế giới cùng Tourify. 
+              Chúng tôi cung cấp những trải nghiệm du lịch đáng nhớ.
+            </p>
+          </div>
+
+          <!-- Quick Links -->
+          <div class="col-md-3 col-sm-6 mb-4">
+            <h5 class="fw-bold mb-3">Liên Kết Nhanh</h5>
+            <ul class="list-unstyled small">
+              <li><a href="{% url 'home' %}" class="text-white text-decoration-none">Trang Chủ</a></li>
+              <li><a href="{% url 'about' %}" class="text-white text-decoration-none">Giới Thiệu</a></li>
+              <li><a href="{% url 'contact' %}" class="text-white text-decoration-none">Liên Hệ</a></li>
+              <li><a href="{% url 'register' %}" class="text-white text-decoration-none">Đăng Ký</a></li>
+            </ul>
+          </div>
+
+          <!-- Contact Info -->
+          <div class="col-md-3 col-sm-6 mb-4">
+            <h5 class="fw-bold mb-3">Thông Tin Liên Hệ</h5>
+            <ul class="list-unstyled small">
+              <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>Thành phố Hồ Chí Minh, Việt Nam</li>
+              <li class="mb-2"><i class="fas fa-phone me-2"></i>+84 123 456 999</li>
+              <li><i class="fas fa-envelope me-2"></i>support@tourify.com</li>
+            </ul>
+          </div>
+
+          <!-- Social Media -->
+          <div class="col-md-3 col-sm-6 mb-4">
+            <h5 class="fw-bold mb-3">Theo Dõi Chúng Tôi</h5>
+            <div class="d-flex gap-3">
+              <a href="#" class="text-white" style="font-size: 1.5rem; transition: all 0.3s;" 
+                 onmouseover="this.style.color='#3b5998'; this.style.transform='scale(1.2)';" 
+                 onmouseout="this.style.color='white'; this.style.transform='scale(1)';">
+                <i class="fab fa-facebook"></i>
+              </a>
+              <a href="#" class="text-white" style="font-size: 1.5rem; transition: all 0.3s;" 
+                 onmouseover="this.style.color='#E4405F'; this.style.transform='scale(1.2)';" 
+                 onmouseout="this.style.color='white'; this.style.transform='scale(1)';">
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a href="#" class="text-white" style="font-size: 1.5rem; transition: all 0.3s;" 
+                 onmouseover="this.style.color='#1DA1F2'; this.style.transform='scale(1.2)';" 
+                 onmouseout="this.style.color='white'; this.style.transform='scale(1)';">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="text-white" style="font-size: 1.5rem; transition: all 0.3s;" 
+                 onmouseover="this.style.color='#FF0000'; this.style.transform='scale(1.2)';" 
+                 onmouseout="this.style.color='white'; this.style.transform='scale(1)';">
+                <i class="fab fa-youtube"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <hr class="border-white-50">
+
+        <!-- Footer Bottom -->
+        <div class="row align-items-center">
+          <div class="col-md-6 text-center text-md-start">
+            <p class="small mb-0">&copy; 2026 Tourify. All rights reserved.</p>
+          </div>
+          <div class="col-md-6 text-center text-md-end">
+            <a href="#" class="text-white text-decoration-none small me-3">Điều Khoản Sử Dụng</a>
+            <a href="#" class="text-white text-decoration-none small me-3">Chính Sách Bảo Mật</a>
+            <a href="#" class="text-white text-decoration-none small">Liên Hệ</a>
+          </div>
+        </div>
       </div>
     </footer>
     <script src="{% static 'js/nonnegative-inputs.js' %}"></script>
