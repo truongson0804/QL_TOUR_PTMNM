@@ -1,7 +1,6 @@
 from django.db import models
 from .tours import Tour
 
-
 class TourImage(models.Model):
     image = models.ImageField(upload_to='tour_images/')
     caption = models.CharField(max_length=255, blank=True)
