@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from apps.tours.models.tours import Tour
 from apps.tours.models.tour_schedules import TourSchedule
 from .servers import create_booking
-import leafmap.leafmap as lm
 
 def booking_confirm(request, id):
     tour_schedule = get_object_or_404(TourSchedule, id=id)
@@ -74,17 +73,4 @@ def booking(request):
         return redirect('tour_detail', id=tour_schedule.tour.id)
 
     return redirect('tour_list')
-
-def map_view(request):
-    # 1. Tạo đối tượng bản đồ
-    m = lm.Map(center=[21.0285, 105.8542], zoom=12) # Ví dụ: Hà Nội
-    
-    # 2. Thêm các thành phần nếu muốn (ví dụ: lớp nền)
-    m.add_basemap("HYBRID")
-    
-    # 3. Xuất bản đồ ra chuỗi HTML
-    # Chúng ta sử dụng .to_html() để lấy mã nhúng
-    map_html = m.to_html()
-
-    return render(request, 'map_template.html', {'map_html': map_html})
 

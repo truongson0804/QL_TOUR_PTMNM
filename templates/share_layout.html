@@ -8,9 +8,6 @@
       rel="stylesheet"
       href="{% static 'bootstrap/css/bootstrap.min.css' %}"
     />
-    {% block leaflet_css %}
-    <link rel="stylesheet" href="{% static 'leaflet/leaflet.css' %}" />
-    {% endblock leaflet_css %}
     <link rel="stylesheet" href="{% static 'bootstrap/css/responsive.css' %}" />
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -31,21 +28,10 @@
       body > main {
         flex: 1;
       }
-      .leaflet-popup-content img,
-      .leaflet-popup-content-wrapper img {
-        max-width: 100%;
-        height: auto;
-        display: block;
-      }
-      .leaflet-popup-content {
-        word-wrap: break-word;
-      }
     </style>
 
     <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    {% block leaflet_js %}
-    <script src="{% static 'leaflet/leaflet.js' %}"></script>
-    {% endblock leaflet_js %} {% block extra_css %}{% endblock %}
+{% block extra_css %}{% endblock %}
 
     <title>{% block title %}Tourify{% endblock %}</title>
   </head>
