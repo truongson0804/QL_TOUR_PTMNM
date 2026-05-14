@@ -50,14 +50,6 @@ INSTALLED_APPS = [
     'apps.admin_panel',
 ]
 
-# Try to enable djangorestframework-gis if it's installed; do not fail if absent.
-try:
-    import rest_framework_gis  # noqa: F401
-except Exception:
-    # not installed in this environment (e.g., minimal dev setup)
-    pass
-else:
-    INSTALLED_APPS.insert(INSTALLED_APPS.index('rest_framework') + 1, 'rest_framework_gis')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

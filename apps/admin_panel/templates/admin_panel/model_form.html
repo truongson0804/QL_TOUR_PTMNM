@@ -39,14 +39,8 @@
           {% endfor %}
         {% endif %}
       {% else %}
-        {# Special-case tour_stops: render lat/lon as hidden and render a map UI #}
+        {# Special-case tour_stops: render lat/lon fields only #}
         {% if config.key == 'tour_stops' and field.name == 'lat_input' %}
-          <div class="mb-3">
-            <label class="form-label">Vị trí trên bản đồ</label>
-            <div id="admin-map" style="height: 400px; width: 100%; border: 1px solid #ddd; border-radius: 6px; margin-bottom: .5rem;"></div>
-            <div class="form-text">Click lên bản đồ hoặc dùng ô tìm kiếm để chọn vị trí. Kéo marker để điều chỉnh.</div>
-          </div>
-
           <div class="row g-2 mb-3">
             <div class="col-md-6">
               <label class="form-label" for="{{ form.lat_input.id_for_label }}">Latitude</label>
@@ -58,10 +52,6 @@
             </div>
           </div>
 
-          {# Include geocoder CSS + plugin + admin map JS #}
-          <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-          <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-          <script src="{% static 'js/admin_tourstop_map.js' %}"></script>
 
         {% elif config.key == 'tour_stops' and field.name == 'lon_input' %}
           {% comment %}lon_input already rendered alongside lat_input above{% endcomment %}
