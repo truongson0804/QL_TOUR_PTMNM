@@ -107,36 +107,6 @@
     background-color: #fcfcfc;
   }
 
-  /* Right Sidebar - Navigation Menu */
-  .sidebar-menu {
-    border: 1px solid var(--border-color);
-    margin-top: 1rem;
-    list-style: none;
-    padding-left: 0;
-    background: #f9f9f9;
-  }
-  .sidebar-menu li {
-    border-bottom: 1px solid var(--border-color);
-  }
-  .sidebar-menu li a {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    color: var(--text-dark);
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-  }
-  .sidebar-menu li a i {
-    width: 25px;
-    color: var(--primary-blue);
-  }
-  .sidebar-menu li a:hover {
-    background-color: #eef5ff;
-    color: var(--primary-blue);
-  }
-
   /* Left Content - Tables */
   .table-schedule {
     font-size: 0.9rem;
@@ -227,8 +197,8 @@
             {% for schedule in schedules %}
             <tr>
               <td class="text-center text-muted fw-bold">{{ forloop.counter }}</td>
-              <td class="fw-medium">{{ schedule.start_day }}</td>
-              <td class="fw-medium">{{ schedule.end_day }}</td>
+              <td class="fw-medium">{{ schedule.start_day|date:"d/m/Y H:i" }}</td>
+              <td class="fw-medium">{{ schedule.end_day|date:"d/m/Y H:i" }}</td>
               <td class="text-center">
                 {% if schedule.total_slots > 0 %}
                   <span style="color: var(--primary-blue); font-weight: 500;">Còn {{ schedule.total_slots }} chỗ</span>
@@ -301,31 +271,12 @@
             <option selected>-- Chọn ngày --</option>
             {% for schedule in schedules %}
               {% if schedule.total_slots > 0 %}
-                <option value="{{ schedule.id }}">{{ schedule.start_day }}</option>
+                <option value="{{ schedule.id }}">{{ schedule.start_day|date:"d/m/Y H:i" }}</option>
               {% endif %}
             {% endfor %}
           </select>
         </div>
       </div>
-
-      <!-- Quick Nav Menu Sidebar -->
-      <ul class="sidebar-menu">
-        <li>
-          <a href="#"><i class="fas fa-map-marker-alt"></i> Điểm nhấn hành trình</a>
-        </li>
-        <li>
-          <a href="#"><i class="far fa-calendar-alt"></i> Lịch trình</a>
-        </li>
-        <li>
-          <a href="#"><i class="fas fa-check-circle"></i> Dịch vụ bao gồm và không bao gồm</a>
-        </li>
-        <li>
-          <a href="#"><i class="fas fa-clipboard-list"></i> Ghi chú</a>
-        </li>
-        <li>
-          <a href="#"><i class="far fa-calendar-plus"></i> Ngày khởi hành khác</a>
-        </li>
-      </ul>
 
     </div>
   </div>
