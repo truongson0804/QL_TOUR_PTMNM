@@ -1,14 +1,16 @@
 import os
 import django
+from dotenv import load_dotenv 
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'QL_tour.settings') # Thay bằng đường dẫn settings của bạn
+load_dotenv() 
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'QL_tour.settings') 
 django.setup()
 
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-# Lấy thông tin Admin từ biến môi trường (Bảo mật, không lo lộ pass trên GitHub)
 username = os.environ.get('DJANGO_SUPERUSER_USERNAME', 'admin')
 email = os.environ.get('DJANGO_SUPERUSER_EMAIL', 'admin@gmail.com')
 password = os.environ.get('DJANGO_SUPERUSER_PASSWORD', 'TanMeo2005')
