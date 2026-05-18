@@ -1,7 +1,7 @@
 import os
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_SETTINGS_MODULE', 'QL_tour.settings') # Thay bằng đường dẫn settings của bạn
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'QL_tour.settings') # Thay bằng đường dẫn settings của bạn
 django.setup()
 
 from django.contrib.auth import get_user_model
