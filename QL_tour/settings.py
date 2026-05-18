@@ -21,6 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-wjekpcc&r(_q3=5rvw26h&tiw&3@rm_$9g9wg9brbp^11u3@4x'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.onrender.com',  # Cho phép tất cả các sub-domain của Render (Tiện nhất)
+    'https://ql-tour-ptmnm-1.onrender.com/' # Hoặc điền chính xác domain app của bạn
+]
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -133,22 +139,3 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 LOGOUT_REDIRECT_URL = 'login'
-
-# Email configuration: by default use console backend for development.
-# To send real emails, set `DJANGO_EMAIL_BACKEND` to
-# 'django.core.mail.backends.smtp.EmailBackend' and provide SMTP env vars.
-EMAIL_BACKEND = os.environ.get(
-    'DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend'
-)
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'no-reply@localhost')
-
-# If SMTP backend is requested, read SMTP settings from environment variables.
-if EMAIL_BACKEND == 'django.core.mail.backends.smtp.EmailBackend':
-    EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
-    EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587) or 587)
-    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
-    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-    EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() in ('true', '1', 'yes')
-    EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'False').lower() in ('true', '1', 'yes')
-    SERVER_EMAIL = os.environ.get('SERVER_EMAIL', EMAIL_HOST_USER)
-
