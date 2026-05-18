@@ -20,4 +20,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# 1. KHAI BÁO PORT ĐỂ RENDER QUÉT (Mặc định Render khuyên dùng 10000)
+EXPOSE 10000
+
+# 2. SỬ DỤNG LỆNH CHẠY ĐỘNG THEO BIẾN $PORT CỦA RENDER
+# Sử dụng 'sh -c' để Docker có thể hiểu và truyền được biến môi trường $PORT vào lệnh chạy Django
+CMD ["sh", "-c", "python manage.py runserver 0.0.0.0:${PORT:-10000}"]
