@@ -43,6 +43,8 @@ from .forms import (
     TourDurationRangeAdminForm,
     UserAdminForm,
     ExcelUploadForm,
+    BookingAdminForm,
+    PaymentAdminForm,
 )
 
 
@@ -198,6 +200,7 @@ def get_model_configs() -> list[ModelConfig]:
                 "create_at",
             ],
             search_fields=["user__username", "note", "status", "tour_schedule__tour__title"],
+            form_class=BookingAdminForm,
         ),
         ModelConfig(
             key="payments",
@@ -214,6 +217,7 @@ def get_model_configs() -> list[ModelConfig]:
                 "paid_at",
             ],
             search_fields=["transaction_id", "booking__user__username", "booking__tour_schedule__tour__title"],
+            form_class=PaymentAdminForm,
         ),
         ModelConfig(
             key="revenue",

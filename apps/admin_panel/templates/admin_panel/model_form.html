@@ -40,14 +40,14 @@
         {% endif %}
       {% else %}
         {# Special-case tour_stops: render lat/lon fields only #}
-        {% if config.key == 'tour_stops' and field.name == 'lat_input' %}
+            {% if config.key == 'tour_stops' and field.name == 'lat_input' %}
           <div class="row g-2 mb-3">
             <div class="col-md-6">
-              <label class="form-label" for="{{ form.lat_input.id_for_label }}">Latitude</label>
+              <label class="form-label" for="{{ form.lat_input.id_for_label }}">Vĩ độ</label>
               {{ form.lat_input }}
             </div>
             <div class="col-md-6">
-              <label class="form-label" for="{{ form.lon_input.id_for_label }}">Longitude</label>
+              <label class="form-label" for="{{ form.lon_input.id_for_label }}">Kinh độ</label>
               {{ form.lon_input }}
             </div>
           </div>
@@ -106,7 +106,7 @@
           class="btn btn-outline-danger"
           href="{% url 'admin_panel:model_delete' model_key=config.key pk=obj.id %}"
         >
-          Xoa
+          Xóa
         </a>
       {% endif %}
     </div>

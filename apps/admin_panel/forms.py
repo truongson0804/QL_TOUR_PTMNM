@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 
 from apps.tours.models.tours import Tour
 from apps.tours.models.tour_schedules import TourSchedule
+from apps.bookings.models import Booking
+from apps.payments.models import Payment
 from datetime import datetime, time
 
 User = get_user_model()
@@ -61,16 +63,25 @@ class UserAdminForm(forms.ModelForm):
             "email",
             "avatar",
             "is_active",
-            "groups",
             "role",
         )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["username"].widget.attrs.update({"class": "form-control", "placeholder": "Username"})
+        self.fields["username"].widget.attrs.update({"class": "form-control", "placeholder": "Tên đăng nhập"})
         self.fields["email"].widget.attrs.update({"class": "form-control", "placeholder": "Email"})
         self.fields["avatar"].widget.attrs.update({"class": "form-control"})
-        self.fields["groups"].widget.attrs.update({"class": "form-select"})
+        # Localize labels/help_text
+        try:
+            self.fields["username"].label = 'Tên đăng nhập'
+            self.fields["username"].help_text = 'Bắt buộc. Tối đa 150 ký tự. Chỉ gồm chữ cái, chữ số và các ký tự @/./+/-/_.'
+        except Exception:
+            pass
+        try:
+            self.fields["email"].label = 'Email'
+        except Exception:
+            pass
+        # Note: 'groups' field intentionally hidden/removed from admin form if not used
         # Role select
         if 'role' in self.fields:
             self.fields['role'].widget.attrs.update({'class': 'form-select'})
@@ -155,4 +166,55 @@ class ExcelUploadForm(forms.Form):
         if not (name.endswith('.xlsx') or name.endswith('.xls') or name.endswith('.csv')):
             raise forms.ValidationError("Chỉ chấp nhận tệp .xlsx, .xls hoặc .csv")
         return f
+
+
+class BookingAdminForm(forms.ModelForm):
+    class Meta:
+        model = Booking
+        fields = "__all__"
+        labels = {
+            'user': 'Người dùng',
+            'tour_schedule': 'Lịch trình Tour',
+            'total_people': 'Số người',
+            'total_price': 'Tổng tiền',
+            'status': 'Trạng thái',
+            'note': 'Ghi chú',
+            'payment_method': 'Phương thức thanh toán',
+            'payment_verified': 'Đã thanh toán',
+            'paid_at': 'Thời gian thanh toán',
+            'create_at': 'Thời gian',
+        }
+        widgets = {
+            'user': forms.Select(attrs={'class': 'form-select'}),
+            'tour_schedule': forms.Select(attrs={'class': 'form-select'}),
+            'total_people': forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
+            'total_price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'status': forms.Select(attrs={'class': 'form-select'}),
+            'note': forms.Textarea(attrs={'class': 'form-control', 'rows': 6}),
+            'payment_method': forms.TextInput(attrs={'class': 'form-control'}),
+            'payment_verified': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'paid_at': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+        }
+
+
+class PaymentAdminForm(forms.ModelForm):
+    class Meta:
+        model = Payment
+        fields = "__all__"
+        labels = {
+            'booking': 'Đặt chỗ',
+            'payment_method': 'Phương thức thanh toán',
+            'amount': 'Số tiền',
+            'status': 'Trạng thái',
+            'transaction_id': 'Mã giao dịch',
+            'paid_at': 'Thời gian thanh toán',
+        }
+        widgets = {
+            'booking': forms.Select(attrs={'class': 'form-select'}),
+            'payment_method': forms.Select(attrs={'class': 'form-select'}),
+            'amount': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'status': forms.Select(attrs={'class': 'form-select'}),
+            'transaction_id': forms.TextInput(attrs={'class': 'form-control'}),
+            'paid_at': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+        }
 

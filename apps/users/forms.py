@@ -33,7 +33,13 @@ class RegisterForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Username'})
+        self.fields['username'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Tên đăng nhập'})
+        # Translate label/help text to Vietnamese
+        try:
+            self.fields['username'].label = 'Tên đăng nhập'
+            self.fields['username'].help_text = 'Bắt buộc. Tối đa 150 ký tự. Chỉ gồm chữ cái, chữ số và các ký tự @/./+/-/_.'
+        except Exception:
+            pass
 
     def clean_password2(self):
         password1 = self.cleaned_data.get('password1')
@@ -59,6 +65,14 @@ class ProfileForm(forms.ModelForm):
             widget = field.widget
             existing = widget.attrs.get('class', '')
             widget.attrs['class'] = ' '.join([existing, 'form-control']).strip()
+ 
+        # Ensure username label/help_text localized
+        if 'username' in self.fields:
+            try:
+                self.fields['username'].label = 'Tên đăng nhập'
+                self.fields['username'].help_text = 'Bắt buộc. Tối đa 150 ký tự. Chỉ gồm chữ cái, chữ số và các ký tự @/./+/-/_.'
+            except Exception:
+                pass
 
 
 class PasswordChangeForm(DjangoPasswordChangeForm):

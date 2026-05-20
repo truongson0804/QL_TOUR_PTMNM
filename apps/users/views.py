@@ -37,12 +37,7 @@ class Register(View):
 
             user.save()  # Lưu một lần duy nhất
 
-            # Add Group
-            try:
-                customer_group = Group.objects.get(name="Customer")
-                user.groups.add(customer_group)
-            except Group.DoesNotExist:
-                pass
+            # Note: removed automatic assignment to a "Customer" group
 
             # Login người dùng tự động sau khi đăng ký
             from django.contrib.auth import authenticate, login as auth_login

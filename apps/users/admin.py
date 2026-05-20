@@ -7,7 +7,7 @@ from .models import User
 class CustomUserAdmin(UserAdmin):
     list_display = ('id', 'username', 'email', 'first_name', 'last_name', 'role', 'is_staff', 'is_active')
     search_fields = ('username', 'email', 'first_name', 'last_name')
-    list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
+    list_filter = ('is_staff', 'is_superuser', 'is_active')
     ordering = ('username',)
 
     fieldsets = (
@@ -21,7 +21,6 @@ class CustomUserAdmin(UserAdmin):
                 "role",
                 "is_staff",
                 "is_superuser",
-                "groups",
                 "user_permissions",
             )
         }),
