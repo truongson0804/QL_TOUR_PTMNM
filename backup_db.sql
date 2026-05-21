@@ -11,8 +11,8 @@ SET standard_conforming_strings = on;
 -- Drop databases (except postgres and template1)
 --
 
-DROP DATABASE "QL_tour";
-DROP DATABASE template_postgis;
+-- DROP DATABASE "QL_tour";
+-- DROP DATABASE template_postgis;
 
 
 
@@ -21,15 +21,15 @@ DROP DATABASE template_postgis;
 -- Drop roles
 --
 
-DROP ROLE postgres;
+-- DROP ROLE postgres;
 
 
 --
 -- Roles
 --
 
-CREATE ROLE postgres;
-ALTER ROLE postgres WITH SUPERUSER INHERIT CREATEROLE CREATEDB LOGIN REPLICATION BYPASSRLS PASSWORD 'SCRAM-SHA-256$4096:e8JXLf3cRqxosQEMezWoSg==$wBsF1MD2i4nwGJAnL0k3jtgsa2JZ1PzXW9CMVBjq+vQ=:hZeb0m6i4ovjZY6TyyR3Wd+gheysaUNrAnsEKZ0WXN8=';
+-- CREATE ROLE postgres;
+-- ALTER ROLE postgres WITH SUPERUSER INHERIT CREATEROLE CREATEDB LOGIN REPLICATION BYPASSRLS PASSWORD 'SCRAM-SHA-256$4096:e8JXLf3cRqxosQEMezWoSg==$wBsF1MD2i4nwGJAnL0k3jtgsa2JZ1PzXW9CMVBjq+vQ=:hZeb0m6i4ovjZY6TyyR3Wd+gheysaUNrAnsEKZ0WXN8=';
 
 --
 -- User Configurations
@@ -157,6 +157,7 @@ SET row_security = off;
 -- Name: QL_tour; Type: DATABASE; Schema: -; Owner: postgres
 --
 
+DROP DATABASE IF EXISTS "QL_tour";
 CREATE DATABASE "QL_tour" WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'en_US.utf8';
 
 
@@ -1047,8 +1048,6 @@ COPY public.tours_tourschedule (id, start_day, end_day, total_slots, tour_id) FR
 -- Data for Name: users_user; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.users_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined, avatar, role) FROM stdin;
-1	pbkdf2_sha256$1000000$28v9vdt4KqMipfB75VCRdl$HqQIWcbyFXZvEHz03ZP/gEReTFdPhA/YjYmGPdu95IU=	2026-05-21 07:10:09.72242+00	t	admin			123@gmail.com	t	t	2026-05-21 07:10:00.954306+00	avatars/default.jpg	user
 \.
 
 
@@ -2025,4 +2024,3 @@ SELECT pg_catalog.setval('topology.topology_id_seq', 1, false);
 --
 -- PostgreSQL database cluster dump complete
 --
-

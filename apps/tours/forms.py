@@ -18,5 +18,3 @@ class TourAdminForm(forms.ModelForm):
             existing = widget.attrs.get('class', '')
             classes = ' '.join(filter(None, [existing, 'form-control', 'ckeditor']))
             widget.attrs['class'] = classes
-
-# Note: TourStop model and its admin form have been removed.

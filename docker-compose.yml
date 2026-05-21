@@ -7,8 +7,11 @@ services:
       POSTGRES_DB: QL_tour
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backup_db.sql:/docker-entrypoint-initdb.d/backup_db.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d QL_tour"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -24,8 +27,10 @@ services:
       dockerfile: Dockerfile
     volumes:
       - .:/app
-    command: python manage.py runserver 0.0.0.0:8000
-    ports: ["8000:8000"]
+    environment:
+      - PORT=8000
+    ports:
+      - "8000:8000"
     depends_on:
       db:
         condition: service_healthy
