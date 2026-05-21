@@ -25,4 +25,4 @@ EXPOSE 10000
 
 # 2. SỬ DỤNG LỆNH CHẠY ĐỘNG THEO BIẾN $PORT CỦA RENDER
 # Sử dụng 'sh -c' để Docker có thể hiểu và truyền được biến môi trường $PORT vào lệnh chạy Django
-CMD ["sh", "-c", "python manage.py collectstatic --noinput && python manage.py makemigrations && python manage.py migrate && python create_admin.py && python manage.py runserver 0.0.0.0:${PORT:-10000}"]
+CMD ["sh", "-c", "python manage.py collectstatic --noinput && python create_admin.py && python manage.py runserver 0.0.0.0:${PORT:-10000}"]

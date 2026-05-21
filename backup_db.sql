@@ -1,169 +1,3 @@
---
--- PostgreSQL database cluster dump
---
-
-SET default_transaction_read_only = off;
-
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-
---
--- Drop databases (except postgres and template1)
---
-
-DROP DATABASE "QL_tour";
-DROP DATABASE template_postgis;
-
-
-
-
---
--- Drop roles
---
-
-DROP ROLE postgres;
-
-
---
--- Roles
---
-
-CREATE ROLE postgres;
-ALTER ROLE postgres WITH SUPERUSER INHERIT CREATEROLE CREATEDB LOGIN REPLICATION BYPASSRLS PASSWORD 'SCRAM-SHA-256$4096:e8JXLf3cRqxosQEMezWoSg==$wBsF1MD2i4nwGJAnL0k3jtgsa2JZ1PzXW9CMVBjq+vQ=:hZeb0m6i4ovjZY6TyyR3Wd+gheysaUNrAnsEKZ0WXN8=';
-
---
--- User Configurations
---
-
-
-
-
-
-
-
-
---
--- Databases
---
-
---
--- Database "template1" dump
---
-
---
--- PostgreSQL database dump
---
-
--- Dumped from database version 16.4 (Debian 16.4-1.pgdg110+2)
--- Dumped by pg_dump version 16.4 (Debian 16.4-1.pgdg110+2)
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
-UPDATE pg_catalog.pg_database SET datistemplate = false WHERE datname = 'template1';
-DROP DATABASE template1;
---
--- Name: template1; Type: DATABASE; Schema: -; Owner: postgres
---
-
-CREATE DATABASE template1 WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'en_US.utf8';
-
-
-ALTER DATABASE template1 OWNER TO postgres;
-
-\connect template1
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
---
--- Name: DATABASE template1; Type: COMMENT; Schema: -; Owner: postgres
---
-
-COMMENT ON DATABASE template1 IS 'default template for new databases';
-
-
---
--- Name: template1; Type: DATABASE PROPERTIES; Schema: -; Owner: postgres
---
-
-ALTER DATABASE template1 IS_TEMPLATE = true;
-
-
-\connect template1
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
---
--- Name: DATABASE template1; Type: ACL; Schema: -; Owner: postgres
---
-
-REVOKE CONNECT,TEMPORARY ON DATABASE template1 FROM PUBLIC;
-GRANT CONNECT ON DATABASE template1 TO PUBLIC;
-
-
---
--- PostgreSQL database dump complete
---
-
---
--- Database "QL_tour" dump
---
-
---
--- PostgreSQL database dump
---
-
--- Dumped from database version 16.4 (Debian 16.4-1.pgdg110+2)
--- Dumped by pg_dump version 16.4 (Debian 16.4-1.pgdg110+2)
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
---
--- Name: QL_tour; Type: DATABASE; Schema: -; Owner: postgres
---
-
-CREATE DATABASE "QL_tour" WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'en_US.utf8';
-
-
-ALTER DATABASE "QL_tour" OWNER TO postgres;
-
-\connect "QL_tour"
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -182,7 +16,6 @@ SET row_security = off;
 ALTER DATABASE "QL_tour" SET search_path TO '$user', 'public', 'topology', 'tiger';
 
 
-\connect "QL_tour"
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -202,7 +35,6 @@ SET row_security = off;
 CREATE SCHEMA tiger;
 
 
-ALTER SCHEMA tiger OWNER TO postgres;
 
 --
 -- Name: tiger_data; Type: SCHEMA; Schema: -; Owner: postgres
@@ -211,7 +43,6 @@ ALTER SCHEMA tiger OWNER TO postgres;
 CREATE SCHEMA tiger_data;
 
 
-ALTER SCHEMA tiger_data OWNER TO postgres;
 
 --
 -- Name: topology; Type: SCHEMA; Schema: -; Owner: postgres
@@ -220,7 +51,6 @@ ALTER SCHEMA tiger_data OWNER TO postgres;
 CREATE SCHEMA topology;
 
 
-ALTER SCHEMA topology OWNER TO postgres;
 
 --
 -- Name: SCHEMA topology; Type: COMMENT; Schema: -; Owner: postgres
@@ -299,7 +129,6 @@ CREATE TABLE public.auth_group (
 );
 
 
-ALTER TABLE public.auth_group OWNER TO postgres;
 
 --
 -- Name: auth_group_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -326,7 +155,6 @@ CREATE TABLE public.auth_group_permissions (
 );
 
 
-ALTER TABLE public.auth_group_permissions OWNER TO postgres;
 
 --
 -- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -354,7 +182,6 @@ CREATE TABLE public.auth_permission (
 );
 
 
-ALTER TABLE public.auth_permission OWNER TO postgres;
 
 --
 -- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -389,7 +216,6 @@ CREATE TABLE public.bookings_booking (
 );
 
 
-ALTER TABLE public.bookings_booking OWNER TO postgres;
 
 --
 -- Name: bookings_booking_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -422,7 +248,6 @@ CREATE TABLE public.django_admin_log (
 );
 
 
-ALTER TABLE public.django_admin_log OWNER TO postgres;
 
 --
 -- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -449,7 +274,6 @@ CREATE TABLE public.django_content_type (
 );
 
 
-ALTER TABLE public.django_content_type OWNER TO postgres;
 
 --
 -- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -477,7 +301,6 @@ CREATE TABLE public.django_migrations (
 );
 
 
-ALTER TABLE public.django_migrations OWNER TO postgres;
 
 --
 -- Name: django_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -504,7 +327,6 @@ CREATE TABLE public.django_session (
 );
 
 
-ALTER TABLE public.django_session OWNER TO postgres;
 
 --
 -- Name: payments_payment; Type: TABLE; Schema: public; Owner: postgres
@@ -521,7 +343,6 @@ CREATE TABLE public.payments_payment (
 );
 
 
-ALTER TABLE public.payments_payment OWNER TO postgres;
 
 --
 -- Name: payments_payment_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -547,7 +368,6 @@ CREATE TABLE public.tours_category (
 );
 
 
-ALTER TABLE public.tours_category OWNER TO postgres;
 
 --
 -- Name: tours_category_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -574,7 +394,6 @@ CREATE TABLE public.tours_continent (
 );
 
 
-ALTER TABLE public.tours_continent OWNER TO postgres;
 
 --
 -- Name: tours_continent_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -602,7 +421,6 @@ CREATE TABLE public.tours_country (
 );
 
 
-ALTER TABLE public.tours_country OWNER TO postgres;
 
 --
 -- Name: tours_country_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -637,7 +455,6 @@ CREATE TABLE public.tours_tour (
 );
 
 
-ALTER TABLE public.tours_tour OWNER TO postgres;
 
 --
 -- Name: tours_tour_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -667,7 +484,6 @@ CREATE TABLE public.tours_tourimage (
 );
 
 
-ALTER TABLE public.tours_tourimage OWNER TO postgres;
 
 --
 -- Name: tours_tourimage_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -696,7 +512,6 @@ CREATE TABLE public.tours_tourschedule (
 );
 
 
-ALTER TABLE public.tours_tourschedule OWNER TO postgres;
 
 --
 -- Name: tours_tourschedule_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -733,7 +548,6 @@ CREATE TABLE public.users_user (
 );
 
 
-ALTER TABLE public.users_user OWNER TO postgres;
 
 --
 -- Name: users_user_groups; Type: TABLE; Schema: public; Owner: postgres
@@ -746,7 +560,6 @@ CREATE TABLE public.users_user_groups (
 );
 
 
-ALTER TABLE public.users_user_groups OWNER TO postgres;
 
 --
 -- Name: users_user_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -787,7 +600,6 @@ CREATE TABLE public.users_user_user_permissions (
 );
 
 
-ALTER TABLE public.users_user_user_permissions OWNER TO postgres;
 
 --
 -- Name: users_user_user_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -1048,7 +860,6 @@ COPY public.tours_tourschedule (id, start_day, end_day, total_slots, tour_id) FR
 --
 
 COPY public.users_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined, avatar, role) FROM stdin;
-1	pbkdf2_sha256$1000000$28v9vdt4KqMipfB75VCRdl$HqQIWcbyFXZvEHz03ZP/gEReTFdPhA/YjYmGPdu95IU=	2026-05-21 07:10:09.72242+00	t	admin			123@gmail.com	t	t	2026-05-21 07:10:00.954306+00	avatars/default.jpg	user
 \.
 
 
@@ -1745,284 +1556,3 @@ ALTER TABLE ONLY public.users_user_user_permissions
 --
 
 --
--- Database "postgres" dump
---
-
---
--- PostgreSQL database dump
---
-
--- Dumped from database version 16.4 (Debian 16.4-1.pgdg110+2)
--- Dumped by pg_dump version 16.4 (Debian 16.4-1.pgdg110+2)
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
-DROP DATABASE postgres;
---
--- Name: postgres; Type: DATABASE; Schema: -; Owner: postgres
---
-
-CREATE DATABASE postgres WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'en_US.utf8';
-
-
-ALTER DATABASE postgres OWNER TO postgres;
-
-\connect postgres
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
---
--- Name: DATABASE postgres; Type: COMMENT; Schema: -; Owner: postgres
---
-
-COMMENT ON DATABASE postgres IS 'default administrative connection database';
-
-
---
--- PostgreSQL database dump complete
---
-
---
--- Database "template_postgis" dump
---
-
---
--- PostgreSQL database dump
---
-
--- Dumped from database version 16.4 (Debian 16.4-1.pgdg110+2)
--- Dumped by pg_dump version 16.4 (Debian 16.4-1.pgdg110+2)
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
---
--- Name: template_postgis; Type: DATABASE; Schema: -; Owner: postgres
---
-
-CREATE DATABASE template_postgis WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'en_US.utf8';
-
-
-ALTER DATABASE template_postgis OWNER TO postgres;
-
-\connect template_postgis
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
---
--- Name: template_postgis; Type: DATABASE PROPERTIES; Schema: -; Owner: postgres
---
-
-ALTER DATABASE template_postgis IS_TEMPLATE = true;
-ALTER DATABASE template_postgis SET search_path TO '$user', 'public', 'topology', 'tiger';
-
-
-\connect template_postgis
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
---
--- Name: tiger; Type: SCHEMA; Schema: -; Owner: postgres
---
-
-CREATE SCHEMA tiger;
-
-
-ALTER SCHEMA tiger OWNER TO postgres;
-
---
--- Name: tiger_data; Type: SCHEMA; Schema: -; Owner: postgres
---
-
-CREATE SCHEMA tiger_data;
-
-
-ALTER SCHEMA tiger_data OWNER TO postgres;
-
---
--- Name: topology; Type: SCHEMA; Schema: -; Owner: postgres
---
-
-CREATE SCHEMA topology;
-
-
-ALTER SCHEMA topology OWNER TO postgres;
-
---
--- Name: SCHEMA topology; Type: COMMENT; Schema: -; Owner: postgres
---
-
-COMMENT ON SCHEMA topology IS 'PostGIS Topology schema';
-
-
---
--- Name: fuzzystrmatch; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS fuzzystrmatch WITH SCHEMA public;
-
-
---
--- Name: EXTENSION fuzzystrmatch; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION fuzzystrmatch IS 'determine similarities and distance between strings';
-
-
---
--- Name: postgis; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
-
-
---
--- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
-
-
---
--- Name: postgis_tiger_geocoder; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder WITH SCHEMA tiger;
-
-
---
--- Name: EXTENSION postgis_tiger_geocoder; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION postgis_tiger_geocoder IS 'PostGIS tiger geocoder and reverse geocoder';
-
-
---
--- Name: postgis_topology; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS postgis_topology WITH SCHEMA topology;
-
-
---
--- Name: EXTENSION postgis_topology; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION postgis_topology IS 'PostGIS topology spatial types and functions';
-
-
---
--- Data for Name: spatial_ref_sys; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.spatial_ref_sys (srid, auth_name, auth_srid, srtext, proj4text) FROM stdin;
-\.
-
-
---
--- Data for Name: geocode_settings; Type: TABLE DATA; Schema: tiger; Owner: postgres
---
-
-COPY tiger.geocode_settings (name, setting, unit, category, short_desc) FROM stdin;
-\.
-
-
---
--- Data for Name: pagc_gaz; Type: TABLE DATA; Schema: tiger; Owner: postgres
---
-
-COPY tiger.pagc_gaz (id, seq, word, stdword, token, is_custom) FROM stdin;
-\.
-
-
---
--- Data for Name: pagc_lex; Type: TABLE DATA; Schema: tiger; Owner: postgres
---
-
-COPY tiger.pagc_lex (id, seq, word, stdword, token, is_custom) FROM stdin;
-\.
-
-
---
--- Data for Name: pagc_rules; Type: TABLE DATA; Schema: tiger; Owner: postgres
---
-
-COPY tiger.pagc_rules (id, rule, is_custom) FROM stdin;
-\.
-
-
---
--- Data for Name: topology; Type: TABLE DATA; Schema: topology; Owner: postgres
---
-
-COPY topology.topology (id, name, srid, "precision", hasz) FROM stdin;
-\.
-
-
---
--- Data for Name: layer; Type: TABLE DATA; Schema: topology; Owner: postgres
---
-
-COPY topology.layer (topology_id, layer_id, schema_name, table_name, feature_column, feature_type, level, child_id) FROM stdin;
-\.
-
-
---
--- Name: topology_id_seq; Type: SEQUENCE SET; Schema: topology; Owner: postgres
---
-
-SELECT pg_catalog.setval('topology.topology_id_seq', 1, false);
-
-
---
--- PostgreSQL database dump complete
---
-
---
--- PostgreSQL database cluster dump complete
---
-
