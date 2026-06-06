@@ -266,9 +266,9 @@
       <!-- Action Box (Booking form simulation) -->
       <div class="action-box">
         <div class="mb-0">
-          <label class="form-label text-muted small">Chọn ngày khởi hành (Nếu có)</label>
+          <label class="form-label text-muted small">Xem ngày khởi hành hiện có</label>
           <select class="form-select border-secondary">
-            <option selected>-- Chọn ngày --</option>
+            <option selected>-- Xem ngày --</option>
             {% for schedule in schedules %}
               {% if schedule.total_slots > 0 %}
                 <option value="{{ schedule.id }}">{{ schedule.start_day|date:"d/m/Y H:i" }}</option>
